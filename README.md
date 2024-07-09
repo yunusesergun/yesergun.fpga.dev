@@ -24,7 +24,7 @@ Fakat diğer çözümlerde ekstra olarak bir sürü işlem yapmak gerekebiliyor 
 
 Öncelikle aşağıdakine benzer bir tasarımımız olması gerekir, yani içerisinde AXI ile haberleşebildiğimiz IP'lerimizin olması zorunlu.
 
-![capture1](Capture1.png)
+![capture1](assets/Capture1.png)
 
 Yukarıda MICROBLAZE ile belirtilen subblock içerisinde Microblaze ve diğer gerekli IP'ler bulunmaktadır. MEMORY ile belirtilen kısımda Block Memory Generator ve AXI BRAM controller IP'leri yer almaktadır.
 
@@ -34,7 +34,7 @@ Ayrıca AXI transactionları daha iyi gözlemleyebilmek adına ILA bağladım. B
 
 Aşağıda da IP ayarları mevcut. Görüleceği üzere konfigüre etmesi çok kolay. Tek yapmamız gereken ihtiyaca göre AXI-Lite veya AXI Memory Mapped buslarından birini seçmek. Burst veri aktarımı isteniyorsa AXI Memory Mapped seçilmeli. Yoksa AXI-Lite seçilmesi IP'nin harcayacağı kaynak açısından daha verimli olacaktır.
 
-![capture2](Capture2.png)
+![capture2](assets/Capture2.png)
 
 Her ne kadar bu IP'yi erken aşama geliştirme aşamalarında kullansak da projenin son halinde de tasarım içerisinde kalabilir. Yani mesela Microblaze kullandığımız bir proje düşünelim. Normalde projenin son halinde Vitis üzerinden yazacağımız kod ile AXI Quad SPI IP'sini konfigüre edebiliriz veya veri okuma-yazma yapılacak. Yine de bu IP proje içerisinde Microblaze üzerinde çalışan kod ile birlikte bulunabilir. Böylece geliştirme aşaması sonrası çıkabilecek problemlerde hızlıca kullanabileceğimiz bir debug IP'si gibi yer alır.
 
@@ -42,11 +42,11 @@ Burada ILA veya VIO'dan farkımız çok daha az kaynak harcayarak real-time (ger
 
 Aşağıda adres editör kısmını paylaştım. Gerçek zamanlı denemeleri yaparken buradaki adresleri offset olarak kullanacağız.
 
-![capture3](Capture3.png)
+![capture3](assets/Capture3.png)
 
 Tasarıma ait bitstream oluşturulduktan ve Vivado Hardware Manager yöntemi ile FPGA programlandıktan sonra soldaki Hardware kısmı aşağıdaki gibi gözükür. İkinci sırada da gözüktüğü üzere JTAG to AXI Master IP'sini hardware tanımaktadır. Bu durum ILA ve VIO gibi IP'lerde de mevcuttur.
 
-![capture4](Capture4.png)
+![capture4](assets/Capture4.png)
 
 Bu noktadan sonra aşağıda bulunan TCL console'u kullanarak bağlı olduğumuz AXI Interconnect'e (veya AXI Smartconnect) bağlı IP'lere erişebilmemiz mümkün.
 
@@ -70,11 +70,11 @@ Aşağıda her bir komutun ne anlama geldiği belirtilmiştir.
 
 Komutları çalıştırdıktan sonra TCL satırları aşağıdaki gibi gözükür:
 
-![capture5](Capture5.png)
+![capture5](assets/Capture5.png)
 
 Ayrıca, oluşturduğumuz bu transaction ILA'da aşağıdaki gibi gözükmekte:
 
-![capture6](Capture6.png)
+![capture6](assets/Capture6.png)
 
 Aşağıda read transaction için kullanılması gereken komutlar aşağıda belirtilmiştir:
 
@@ -87,11 +87,11 @@ run_hw_axi [get_hw_axi_txns $bram_rt]
 
 Komutları çalıştırdıktan sonra TCL satırları aşağıdaki gibi gözükür:
 
-![capture7](Capture7.png)
+![capture7](assets/Capture7.png)
 
 Ayrıca, oluşturduğumuz bu transaction ILA'da aşağıdaki gibi gözükmekte:
 
-![capture8](Capture8.png)
+![capture8](assets/Capture8.png)
 
 Yukarıdaki görsellerde de görüleceği üzere `0xC0000000` adresine `00000008` değeri yazılıp sonrasında aynı adres okunmuştur. Yazılan ve okunan değerin aynı olduğu ispatlanmıştır.
 
@@ -108,11 +108,11 @@ run_hw_axi [get_hw_axi_txns $bram_wt]
 
 Komutları çalıştırdıktan sonra TCL satırları aşağıdaki gibi gözükür:
 
-![capture9](Capture9.png)
+![capture9](assets/Capture9.png)
 
 Ayrıca, oluşturduğumuz bu transaction ILA'da aşağıdaki gibi gözükmekte. AXI-Lite arayüzünden farklı olarak burst veri akışı gerçekleşmekte:
 
-![capture10](Capture10.png)
+![capture10](assets/Capture10.png)
 
 Aşağıda read transaction için kullanılması gereken komutlar aşağıda belirtilmiştir:
 
@@ -125,11 +125,11 @@ run_hw_axi [get_hw_axi_txns $bram_rt]
 
 Komutları çalıştırdıktan sonra TCL satırları aşağıdaki gibi gözükür:
 
-![capture11](Capture11.png)
+![capture11](assets/Capture11.png)
 
 Ayrıca, oluşturduğumuz bu transaction ILA'da aşağıdaki gibi gözükmekte:
 
-![capture12](Capture12.png)
+![capture12](assets/Capture12.png)
 
 Yazdığımız verileri aynı şekilde okuyabildik.
 
