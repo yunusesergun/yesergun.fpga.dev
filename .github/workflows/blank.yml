@@ -1,0 +1,24 @@
+name: Vivado CI
+
+on: [push, pull_request]
+
+jobs:
+  vivado-build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Vivado environment
+      run: |
+        echo "Vivado environment setup"
+        sudo apt-get update
+        sudo apt-get install -y wget
+        wget https://www.xilinx.com/member/forms/download/xef.html?filename=Xilinx_Vivado_SDK_2022.1_0507_1230_Lin64.bin -O vivado_installer.bin
+        chmod +x vivado_installer.bin
+        ./vivado_installer.bin --mode unattended --unattendedmodeui minimal --accept_eula yes --prefix /opt/Xilinx
+
+    - name: Run FuseSoC
+      run: |
+        source /opt/Xilinx/Vivado/2022.1/settings64.sh
