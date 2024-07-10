@@ -1,24 +1,35 @@
-name: Vivado CI
+name: Build and Source Vivado
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - deneme  # Adjust this if you're using a different branch
 
 jobs:
-  vivado-build:
+  build:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Set up Vivado environment
-      run: |
-        echo "Vivado environment setup"
-        sudo apt-get update
-        sudo apt-get install -y wget
-        wget https://www.xilinx.com/member/forms/download/xef.html?filename=Xilinx_Vivado_SDK_2022.1_0507_1230_Lin64.bin -O vivado_installer.bin
-        chmod +x vivado_installer.bin
-        ./vivado_installer.bin --mode unattended --unattendedmodeui minimal --accept_eula yes --prefix /opt/Xilinx
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
 
-    - name: Run FuseSoC
+    - name: Log in to GitHub Container Registry
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.GITHUB_ACTOR }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Build Docker image
+      uses: docker/build-push-action@v4
+      with:
+        context: ./docker
+        file: ./docker/Dockerfile
+        push: false  # Set to true if you want to push to a registry
+        tags: vivado:2022.1
+
+    - name: Run Vivado inside Docker container
       run: |
-        source /opt/Xilinx/Vivado/2022.1/settings64.sh
+        docker run --rm vivado:2022.1 /bin/bash -c "source /opt/Xilinx/Vivado/2022.1/settings64.sh && vivado -version"
