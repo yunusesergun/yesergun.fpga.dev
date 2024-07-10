@@ -16,20 +16,14 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
 
-    - name: Log in to Docker Hub
+    - name: Log in to GitHub Container Registry
       uses: docker/login-action@v2
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
     - name: Build Docker image
-      uses: docker/build-push-action@v4
-      with:
-        context: ./docker
-        file: ./docker/Dockerfile
-        push: false  # Set to true if you want to push to a registry
-        tags: vivado:2022.1
+      run: docker build -t vivado:2022.1 ./docker
 
     - name: Run Vivado inside Docker container
-      run: |
-        docker run --rm vivado:2022.1 /bin/bash -c "source /opt/Xilinx/Vivado/2022.1/settings64.sh && vivado -version"
+      run: docker run --rm vivado:2022.1 /bin/bash -c "source /opt/Xilinx/Vivado/2022.1/settings64.sh && vivado -version"
