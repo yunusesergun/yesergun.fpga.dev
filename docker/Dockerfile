@@ -42,9 +42,6 @@ RUN pip3 install gdown
 
 RUN gdown https://drive.google.com/file/d/1lU5Z8eaOu_eicJbNJSsuqwIb2a7_D8JU/view?usp=sharing -O Xilinx_Unified_2022.1_0420_0327_Lin64.bin
 
-# Copy the Vivado .bin file into the container
-COPY Xilinx_Unified_2022.1_0420_0327_Lin64.bin /vivado_installer/
-
 # Make the .bin file executable
 RUN chmod +x Xilinx_Unified_2022.1_0420_0327_Lin64.bin
 
