@@ -40,13 +40,13 @@ WORKDIR /vivado_installer
 # Install gdown to download files from Google Drive
 RUN pip3 install gdown
 
-RUN gdown https://drive.google.com/file/d/1lU5Z8eaOu_eicJbNJSsuqwIb2a7_D8JU/view?usp=sharing -O Xilinx_Unified_2022.1_0420_0327_Lin64.bin
+RUN gdown https://drive.google.com/uc?id=1lU5Z8eaOu_eicJbNJSsuqwIb2a7_D8J -O Xilinx_Unified_2022.1_0420_0327_Lin64.bin
 
 # Make the .bin file executable
 RUN chmod +x Xilinx_Unified_2022.1_0420_0327_Lin64.bin
 
 # Run the Vivado installer in silent mode
-RUN ./Xilinx_Unified_2022.1_0420_0327_Lin64.bin --mode unattended --unattendedmodeui minimal --installdir /opt/Xilinx
+RUN ./Xilinx_Unified_2022.1_0420_0327_Lin64.bin --confirm -- -y --noexec --target /opt/Xilinx
 
 # Add Vivado to PATH
 ENV PATH="/opt/Xilinx/Vivado/2022.1/bin:${PATH}"
