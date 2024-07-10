@@ -37,6 +37,8 @@ RUN apt-get update && \
 # Set the working directory
 WORKDIR /vivado_installer
 
+WORKDIR /opt/Xilinx
+
 # Install gdown to download files from Google Drive
 RUN pip3 install gdown
 
