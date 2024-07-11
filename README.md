@@ -144,3 +144,9 @@ We were able to read the data we wrote in the same way.
 I was very skeptical when I first looked at the IP. It seemed illogical while solutions like `xsct`, `Vitis` were available, but I realized as I used it that it could be useful in the early stages of development. It is very easy to use and learn. We can configure AXI interface IPs or write data to relevant parts using only Vivado.
 
 By writing short TCL codes, we can do many things without other solutions or programs. As a result, I found it worth using.
+
+## References
+
+- [JTAG to AXI Master Usage Video](https://www.xilinx.com/video/software/jtag-to-axi-master-core.html)
+- [Xilinx JTAG to AXI Master Documentation](https://docs.amd.com/v/u/en-US/pg174-jtag-axi)
+- [Example Usage of JTAG to AXI Master](https://xilinx-wiki.atlassian.net/wiki/spaces/A/pages/64488613/Using+the+JTAG+to+AXI+to+test+Peripherals+in+Zynq+Ultrascale)

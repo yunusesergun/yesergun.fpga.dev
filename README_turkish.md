@@ -144,3 +144,9 @@ Yazdığımız verileri aynı şekilde okuyabildik.
 IP'ye ilk bakarken çok önyargılıydım. `xsct`, `Vitis` gibi çözümler dururken mantıksız gelmişti ama kullandıkça fark ettim ki geliştirmenin ilk aşamalarında kullanışlı olabilir. Kullanması ve öğrenmesi de gayet kolay. Sadece Vivado ile AXI arayüzü olan IP'leri konfigüre edebiliyoruz veya ilgili kısımlarına veri yazabiliyoruz.
 
 Kısa tcl kodları yazarak birçok işi diğer çözümler veya programlar olmadan yapabiliriz. Sonuç olarak kullanmaya değer buldum.
+
+## Referanslar
+
+- [JTAG to AXI Master Kullanım Videosu](https://www.xilinx.com/video/software/jtag-to-axi-master-core.html)
+- [Xilinx JTAG to AXI Master Dokümanı](https://docs.amd.com/v/u/en-US/pg174-jtag-axi)
+- [JTAG to AXI Master Örnek Kullanımı](https://xilinx-wiki.atlassian.net/wiki/spaces/A/pages/64488613/Using+the+JTAG+to+AXI+to+test+Peripherals+in+Zynq+Ultrascale)
