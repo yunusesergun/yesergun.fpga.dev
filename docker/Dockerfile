@@ -44,8 +44,8 @@ RUN chmod +x Xilinx_Unified_2022.1_0420_0327_Lin64.bin
 # Add a debug step to check if the file is present
 RUN ls -lh Xilinx_Unified_2022.1_0420_0327_Lin64.bin
 
-# Run the Vivado installer in silent mode
-RUN ./Xilinx_Unified_2022.1_0420_0327_Lin64.bin --confirm -- -y --noexec --target /opt || { echo "Vivado installation failed"; exit 1; }
+# Run the Vivado installer in batch mode (headless mode)
+RUN ./Xilinx_Unified_2022.1_0420_0327_Lin64.bin --confirm --target /opt/Xilinx -b Install || { echo "Vivado installation failed"; exit 1; }
 
 # Check if Vivado is installed correctly
 RUN ls -lah /opt/Xilinx
