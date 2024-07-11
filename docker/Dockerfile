@@ -34,11 +34,6 @@ RUN apt-get update && \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Set the working directory
-WORKDIR /vivado_installer
-
-WORKDIR /opt/Xilinx
-
 # Install gdown to download files from Google Drive
 RUN pip3 install gdown
 
@@ -52,9 +47,6 @@ RUN ./Xilinx_Unified_2022.1_0420_0327_Lin64.bin --confirm -- -y --noexec --targe
 
 # Add Vivado to PATH
 ENV PATH="/opt/Xilinx/Vivado/2022.1/bin:${PATH}"
-
-# Clean up installer
-RUN rm -rf /vivado_installer
 
 # Set default command
 CMD ["bash"]
