@@ -1,64 +1,64 @@
 # JTAG to AXI Master IP
 
-Xilinx'in `JTAG to AXI Master` isimli bir IP'si var. Literatürde gördüğüm kadarıyla yaygınca kullanılan bir IP değil. Esasında debug amaçlı tasarlanmış bir IP. Özellikle birden fazla adres alanına `AXI-Lite` veya `AXI Memory Mapped` arayüzü ile tek bir yerden erişmek için kullanılıyor. Aşağıda JTAG to AXI Master IP'sinin proje içerisinde nasıl duracağı ile ilgili örnek bir figür var:
+Xilinx has an IP called `JTAG to AXI Master`. As far as I've seen in the literature, it's not a widely used IP. It is essentially designed for debugging purposes. It's particularly used to access multiple address spaces from a single point via `AXI-Lite` or `AXI Memory Mapped` interface. Below is an example figure showing how JTAG to AXI Master IP will fit into a project:
 
 ![capture0](assets/figure1.drawio.png)
 
-JTAG to AXI Master IP'sinin **adres alanı (address space)** bulunmuyor. Bu yüzden istediği adrese yazma, istediği adresten okuma işlemini yapabiliyor. Bunu yaparken başka bir IP'yi projeden çıkarmamıza gerek kalmıyor.
+JTAG to AXI Master IP does not have an **address space**. Therefore, it can write to or read from any desired address. While doing this, there's no need to remove another IP from the project.
 
-Temelde, bu IP sayesinde Vivado harici herhangi bir programa gerek kalmadan; FPGA programlandıktan sonra `TCL` komutu ile yukarıdaki görseldeki yapıyı koruyarak istediğimiz AXI-Lite veya AXI Memory Mapped slave arayüzüne erişebilmekteyiz.
+Fundamentally, with this IP, we can access desired AXI-Lite or AXI Memory Mapped slave interface using `TCL console` after FPGA is programmed without need for any program other than Vivado, as shown in the figure above.
 
-## Motivasyon
+## Motivation
 
-Mesela; proje gereği **AXI IIC**, **AXI Quad SPI** ve **AXI Bram Controller** IP'lerini kullanıyoruz. Bu durumda her biri için bir adres **offset'i** belirleniyor (Vivado veya kullanıcı tarafından). Bu adresler dikkate alınarak projenin veya IP'lerin gereği olarak ilgili kısımlara veriler yazılır. Fakat henüz geliştirme aşamasında küçük denemeler yapabilmek için ilgili IP'ye AXI-Lite veya AXI Memory Mapped üzerinden erişmemiz ve yazma/okuma yapmamız gerekiyor. İşte JTAG to AXI Master IP'si sayesinde projeye dahil IP'lerin ilgili **AXI arayüzlerine** erişim sağlayabiliyoruz. Bunu yapmak için **Vitis** veya eski ismiyle **Xilinx SDK** veya işletim sistemi gibi kompleks ve başka programlara ihtiyaç duyan çözümlere gerek olmuyor.
+For example; we use **AXI IIC**, **AXI Quad SPI**, and **AXI Bram Controller** IPs in a project. In this case, an address offset is determined for each one (by Vivado or a user). Considering these addresses, data is written to relevant parts as required by the project or IPs. However, to make small trials during development phase, we need to access and write/read relevant IP via AXI-Lite or AXI Memory Mapped. Thanks to JTAG to AXI Master IP, we can access the relevant **AXI interfaces** of IPs included in the project. To do this, there is no need for solutions that require other programs like **Vitis** or its former name **Xilinx SDK** or operating systems.
 
-## Diğer Alternatifler
+## Other Alternatives
 
-Diğer alternatif çözümlerden de bahsetmek gerekir. Aşağıda diğer çözümler konusunda kısa anlatımlar yer alıyor:
+It is also necessary to mention other alternative solutions. Below are brief explanations regarding other solutions:
 
-- Xilinx Vitis (eski adıyla Xilinx SDK) programının **xsct** desteği bulunmakta. Bunun için `MicroBlaze Debug Module (MDM)` IP'sine ihtiyaç var. Çeşitli işlemler sonrası `mwr` veya `mrd` komutlarıyla ilgili adreslere gerekli veriler yazılabilir.
-- Microblaze IP'sini tasarıma ekleyip Xilinx Vitis (veya Xilinx SDK) üzerinden `Memory` ekranını açarak ilgili adreslere gerekli veriler GUI yardımıyla yazılabilir.
-- İşletim sistemi kurabildiğimiz kartlarda `devmem` kullanılabilir.
+- Xilinx Vitis (formerly known as Xilinx SDK) program has **xsct** support. For this, `MicroBlaze Debug Module (MDM)` IP is needed. After various processes, necessary data can be written to relevant addresses with `mwr` or `mrd` commands.
+- By adding Microblaze IP to the design and opening `Memory` window via Xilinx Vitis (or Xilinx SDK), necessary data can be written to relevant addresses with the help of a GUI.
+- `devmem` can be used on boards where we can install an operating system.
 
-## JTAG to AXI Master IP'sinin Avantajları
+## Advantages of JTAG to AXI Master IP
 
-Bu IP'nin en büyük avantajı Vivado haricinde herhangi bir programa veya ekrana ihtiyaç duymamamız. Yani bu IP'yi Vivado yoluyla FPGA'i programladıktan sonra `tcl console` kısmını kullanarak kullanabiliyoruz.
+The biggest advantage of this IP is that we do not need any program or window other than Vivado. That is, we can use this IP after programming FPGA via Vivado by using `tcl console`.
 
-Öte yandan, diğer çözümlerde ekstra olarak bir sürü işlem yapmak gerekebiliyor veya birden fazla programa ihtiyaç duyabiliyoruz. Bu yüzden erken aşama geliştirmelerinde bu IP'yi kullanmak çok mantıklı bir araç haline geliyor.
+On the other hand, in other solutions, a lot of extra processes may be required, or multiple programs may be needed. Therefore, using this IP in the early stages of development becomes a very logical tool.
 
-## Nasıl Kullanabiliriz
+## How to Use
 
-Öncelikle aşağıdakine benzer bir tasarımımız olması gerekir, yani içerisinde AXI ile haberleşebildiğimiz IP'lerimizin olması zorunlu.
+Firstly, we need a design similar to the one below, which must include IPs that we can communicate with via AXI.
 
 ![capture1](assets/Capture1.png)
 
-Yukarıda `MICROBLAZE` ile belirtilen subblock içerisinde Microblaze ve diğer gerekli IP'ler bulunmaktadır. `MEMORY` ile belirtilen kısımda Block Memory Generator ve AXI BRAM controller IP'leri yer almaktadır.
+In the subblock indicated by `MICROBLAZE` above, there are Microblaze and other necessary IPs. In the part indicated by `MEMORY`, there are Block Memory Generator and AXI BRAM controller IPs.
 
-Yeşil ile belirtilen IP, üzerine çalışacağımız IP yani JTAG to AXI Master IP'si. Fark edileceği üzere AXI ile erişebildiğimiz iki IP var. Biri AXI Quad SPI, diğeri ise MEMORY subblock'u.
+The green indicated IP is JTAG to AXI Master IP that we will be working on. As can be seen, there are two IPs we can access via AXI. One is AXI Quad SPI, and the other one is MEMORY subblock.
 
-Ayrıca AXI transactionları daha iyi gözlemleyebilmek adına `ILA` bağladım. Bu sayede AXI Memory Mapped arayüz ayarlandığında **burst** veri akışını doğrulayacağız. AXI-lite arayüz ayarında ise sadece veri akışını gözlemleyebileceğiz.
+Also, I connected `ILA` to better observe AXI transactions. This way, we will verify **burst** data flow when AXI Memory Mapped interface is set. In AXI-Lite interface setting, we will only be able to observe data flow.
 
-Aşağıda IP ayarları mevcut. Görüleceği üzere konfigüre etmesi çok kolay. Tek yapmamız gereken ihtiyaca göre AXI-Lite veya AXI Memory Mapped buslarından birini seçmek. Burst veri aktarımı isteniyorsa `AXI4` seçilmeli. Böyle bir istek veya gerek yoksa `AXI4LITE` seçilmesi IP'nin harcayacağı kaynak açısından daha verimli olacaktır.
+Below are the IP settings. As can be seen, it is very easy to configure. All we need to do is select one of AXI-Lite or AXI Memory Mapped buses according to our needs. If burst data transfer is desired, `AXI4` should be selected. If there is no such requirement, selecting `AXI4LITE` will be more efficient in terms of resources the IP will consume.
 
 ![capture2](assets/Capture2.png)
 
-Her ne kadar bu IP'yi erken aşama geliştirme aşamalarında kullansak da projenin son halinde de tasarım içerisinde bırakabiliriz. Mesela **Microblaze** kullandığımız bir proje düşünelim. Normalde projenin son halinde Vitis üzerinden yazacağımız kod ile AXI Quad SPI IP'sini konfigüre edebiliriz veya veri okuma-yazma yapabiliriz. Yine de bu IP, proje içerisinde Microblaze üzerinde çalışan kod ile birlikte bulunabilir. Böylece geliştirme aşaması sonrası çıkabilecek problemlerde hızlıca kullanabileceğimiz bir alternatif olabilir.
+Although we use this IP in early stages of development, we can also leave it in final stage of projects. For example, let's consider a project where we use **Microblaze**. Normally, in final stage of the project, we can configure AXI Quad SPI IP or perform data read/write operations via a code we will write through Vitis. Still, this IP can be present in the project along with the code running on Microblaze. Thus, it can be a quick alternative that we can use in case of problems that may arise after the development phase.
 
-Burada **ILA** veya **VIO'dan** farkımız çok daha az kaynak harcayarak gerçek zamanlı (real-time) debugging yapabilmemiz ve AXI gibi fazlaca portu bulunan bir bus'ı rahatlıkla sürebilmemiz.
+Here, the difference between **ILA** or **VIO** and JTAG to AXI Master is that we can perform real-time debugging with much fewer resources and easily drive a bus like AXI, which has many ports.
 
-Aşağıda adres editör kısmını paylaştım. Gerçek zamanlı denemeleri yaparken buradaki adresleri offset olarak kullanacağız.
+Below I have shared the address editor part of demo project. While performing real-time trials, we will use these addresses as offsets.
 
 ![capture3](assets/Capture3.png)
 
-Tasarıma ait bitstream oluşturulduktan ve Vivado Hardware Manager yöntemi ile FPGA programlandıktan sonra soldaki `Hardware` kısmı aşağıdaki gibi gözükür. İkinci sırada da gözüktüğü üzere JTAG to AXI Master IP'sini hardware tanımaktadır. Bu durum ILA ve VIO gibi IP'lerde de mevcuttur.
+After the bitstream belonging to the design is created and FPGA is programmed via Vivado Hardware Manager part, `Hardware` part on the left will look like the following. As seen in the second row, JTAG to AXI Master IP is recognized as hardware. This situation is also present in IPs like ILA and VIO.
 
 ![capture4](assets/Capture4.png)
 
-Bu noktadan sonra aşağıda bulunan adımları takip ederek bağlı olduğumuz `AXI Interconnect`'e (veya AXI Smartconnect) bağlı IP'lere erişebilmemiz mümkün.
+From this point on, we can access IPs connected to `AXI Interconnect IP` (or AXI Smartconnect) by following the steps below.
 
-## AXI-Lite Arayüz Ayarı
+## AXI-Lite Interface Setting
 
-Block tasarıma eklediğimiz JTAG to AXI Master IP'sinin `AXI Protocol` ayarı `AXI4LITE` yapılmalıdır. Bu haliyle sentezlenen tasarım ile FPGA programlandıktan sonra aşağıdaki komutlar girilerek AXI-Lite arayüzünden ilgili adrese yazma işlemi yapılabilir, yani write transaction gerçekleştirilir.
+`AXI Protocol` setting of JTAG to AXI Master IP that we added to the block design should be set to `AXI4LITE`. With the design synthesized in this way, after FPGA is programmed, the following commands can be entered to perform a write transaction to the relevant address via AXI-Lite interface.
 
 ```tcl
 set addr_bram 0xC0000000
@@ -67,22 +67,22 @@ create_hw_axi_txn $bram_wt [get_hw_axis hw_axi_1] -type write -address $addr_bra
 run_hw_axi [get_hw_axi_txns $bram_wt]
 ```
 
-Aşağıda her bir komutun ne anlama geldiği belirtilmiştir:
+Below is an explanation of what each command means:
 
-- `set addr_bram 0xC0000000`: Adres tanımlaması bir değişkene atanır. Bu örnekte BRAM'in offset adresi verilmiştir.
-- `set bram_wt bram_wt`: Transaction objesi tanımlanmış ve bir değişkene atanmıştır.
-- `create_hw_axi_txn...`: Write transaction oluşturulur. Henüz veri gönderme işlemi vs. yapılmaz. Yapılacak transaction ile ilgili tanımlamalar yapılır ve transaction objesine tanıtılır.
-- `run_hw_axi...`: Write transaction gerçekleştirilir.
+- `set addr_bram 0xC0000000`: Address definition is assigned to a variable. In this example, the offset address of BRAM is assigned.
+- `set bram_wt bram_wt`: The transaction object is defined and assigned to a variable.
+- `create_hw_axi_txn...`: A write transaction is created. No data transfer etc. is done yet. Definitions related to the transaction to be made are made and introduced to the transaction object.
+- `run_hw_axi...`: The write transaction is performed.
 
-Komutları çalıştırdıktan sonra TCL satırları aşağıdaki gibi gözükür:
+After running the commands, the TCL lines will look like this:
 
 ![capture5](assets/Capture5.png)
 
-Ayrıca, oluşturduğumuz bu transaction ILA'da aşağıdaki gibi gözükmekte:
+Also, the transaction we created appears as follows in ILA:
 
 ![capture6](assets/Capture6.png)
 
-Aşağıda read transaction için kullanılması gereken komutlar aşağıda belirtilmiştir:
+Below are the commands that should be used for a read transaction:
 
 ```tcl
 set addr_bram 0xC0000000
@@ -91,19 +91,19 @@ create_hw_axi_txn $bram_rt [get_hw_axis hw_axi_1] -type read -address $addr_bram
 run_hw_axi [get_hw_axi_txns $bram_rt]
 ```
 
-Komutları çalıştırdıktan sonra TCL satırları aşağıdaki gibi gözükür:
+After running the commands, the TCL lines will look like this:
 
 ![capture7](assets/Capture7.png)
 
-Ayrıca, oluşturduğumuz bu transaction ILA'da aşağıdaki gibi gözükmekte:
+Also, the transaction we created appears as follows in ILA:
 
 ![capture8](assets/Capture8.png)
 
-Yukarıdaki görsellerde de görüleceği üzere `0xC0000000` adresine `00000008` değeri yazılıp sonrasında aynı adres okunmuştur. Yazılan ve okunan değerin aynı olduğu ispatlanmıştır.
+As seen in the images above, value `00000008` is written to address `0xC0000000` and then read from the same address. It is proven that the written and read values are the same.
 
-## AXI Memory Mapped Ayarı
+## AXI Memory Mapped Setting
 
-Block tasarıma eklediğimiz JTAG to AXI Master IP'sinin `AXI Protocol` ayarı `AXI4` yapılmalıdır. Bu haliyle sentezlenen tasarım ile FPGA programlandıktan sonra aşağıdaki komutlar girilerek AXI Memory Mapped arayüzünden ilgili adrese yazma işlemi yapılabilir, yani write transaction gerçekleştirilir.
+`AXI Protocol` setting of JTAG to AXI Master IP that we added to the block design should be set to `AXI4`. With the design synthesized in this way, after FPGA is programmed, the following commands can be entered to perform a write transaction to the relevant address via AXI Memory Mapped interface.
 
 ```tcl
 set addr_bram 0xC0000000
@@ -112,15 +112,15 @@ create_hw_axi_txn $bram_wt [get_hw_axis hw_axi_1] -type write -address $addr_bra
 run_hw_axi [get_hw_axi_txns $bram_wt]
 ```
 
-Komutları çalıştırdıktan sonra TCL satırları aşağıdaki gibi gözükür:
+After running the commands, the TCL lines will look like this:
 
 ![capture9](assets/Capture9.png)
 
-Ayrıca, oluşturduğumuz bu transaction ILA'da aşağıdaki gibi gözükmekte. AXI-Lite arayüzünden farklı olarak burst veri akışı gerçekleşir:
+Also, the transaction we created appears as follows in ILA. Unlike AXI-Lite interface, burst data flow occurs:
 
 ![capture10](assets/Capture10.png)
 
-Aşağıda read transaction için kullanılması gereken komutlar aşağıda belirtilmiştir:
+Below are the commands that should be used for a read transaction:
 
 ```tcl
 set addr_bram 0xC0000000
@@ -129,18 +129,18 @@ create_hw_axi_txn $bram_rt [get_hw_axis hw_axi_1] -type read -address $addr_bram
 run_hw_axi [get_hw_axi_txns $bram_rt]
 ```
 
-Komutları çalıştırdıktan sonra TCL satırları aşağıdaki gibi gözükür:
+After running the commands, the TCL lines will look like this:
 
 ![capture11](assets/Capture11.png)
 
-Ayrıca, oluşturduğumuz bu transaction ILA'da aşağıdaki gibi gözükmekte:
+Also, the transaction we created appears as follows in ILA.
 
 ![capture12](assets/Capture12.png)
 
-Yazdığımız verileri aynı şekilde okuyabildik.
+We were able to read the data we wrote in the same way.
 
-## Son Görüşler
+## Final Thoughts
 
-IP'ye ilk bakarken çok önyargılıydım. `xsct`, `Vitis` gibi çözümler dururken mantıksız gelmişti ama kullandıkça fark ettim ki geliştirmenin ilk aşamalarında kullanışlı olabilir. Kullanması ve öğrenmesi de gayet kolay. Sadece Vivado ile AXI arayüzü olan IP'leri konfigüre edebiliyoruz veya ilgili kısımlarına veri yazabiliyoruz.
+I was very skeptical when I first looked at the IP. It seemed illogical while solutions like `xsct`, `Vitis` were available, but I realized as I used it that it could be useful in the early stages of development. It is very easy to use and learn. We can configure AXI interface IPs or write data to relevant parts using only Vivado.
 
-Kısa tcl kodları yazarak birçok işi diğer çözümler veya programlar olmadan yapabiliriz. Sonuç olarak kullanmaya değer buldum.
+By writing short TCL codes, we can do many things without other solutions or programs. As a result, I found it worth using.
