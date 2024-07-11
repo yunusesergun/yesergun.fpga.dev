@@ -20,7 +20,7 @@ jobs:
       run: docker build -t vivado:2022.1 ./docker
 
     - name: List contents of Vivado installation directory
-      run: docker run --rm vivado:2022.1 ls -lah /opt/Xilinx/
+      run: docker run --rm vivado:2022.1 ls -lah /opt/
 
     - name: Run Vivado inside Docker container
       run: docker run --rm vivado:2022.1 /bin/bash -c "source /opt/Xilinx/Vivado/2022.1/settings64.sh && vivado -version"
