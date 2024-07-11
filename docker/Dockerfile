@@ -37,13 +37,18 @@ RUN apt-get update && \
 # Install gdown to download files from Google Drive
 RUN pip3 install gdown
 
+# Download and install Vivado
 RUN gdown --fuzzy https://drive.google.com/file/d/1lU5Z8eaOu_eicJbNJSsuqwIb2a7_D8JU/view?usp=sharing -O Xilinx_Unified_2022.1_0420_0327_Lin64.bin
-
-# Make the .bin file executable
 RUN chmod +x Xilinx_Unified_2022.1_0420_0327_Lin64.bin
 
+# Add a debug step to check if the file is present
+RUN ls -lh Xilinx_Unified_2022.1_0420_0327_Lin64.bin
+
 # Run the Vivado installer in silent mode
-RUN ./Xilinx_Unified_2022.1_0420_0327_Lin64.bin --confirm -- -y --noexec --target /opt
+RUN ./Xilinx_Unified_2022.1_0420_0327_Lin64.bin --confirm -- -y --noexec --target /opt || { echo "Vivado installation failed"; exit 1; }
+
+# Check if Vivado is installed correctly
+RUN ls -lah /opt/Xilinx
 
 # Add Vivado to PATH
 ENV PATH="/opt/Xilinx/Vivado/2022.1/bin:${PATH}"
