@@ -18,11 +18,11 @@ jobs:
       run: D:\Xilinx\Vivado\2022.1\settings64.bat
       shell: cmd
 
-    - name: Add fusesoc library and create Vivado project
-      run: |
-        cd fpga
-        dir
-        fusesoc library add jtag_to_axi_master .
-        dir
-        fusesoc run --target=synth --setup --build --no-export --tool vivado --flag out_of_context fusesoc:examples:jtag_to_axi_master
-      shell: cmd
+#    - name: Add fusesoc library and create Vivado project
+#      run: |
+#        cd fpga
+#        dir
+#        fusesoc library add jtag_to_axi_master .
+#        dir
+#        fusesoc run --target=synth --setup --build --no-export --tool vivado --flag out_of_context fusesoc:examples:jtag_to_axi_master
+#      shell: cmd
