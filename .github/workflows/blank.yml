@@ -1,0 +1,19 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: self-hosted
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set execution policy
+      run: Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
+      shell: powershell
+
+    - name: Set up Vivado environment
+      run: D:\Xilinx\Vivado\2022.1\settings64.bat
+      shell: cmd
