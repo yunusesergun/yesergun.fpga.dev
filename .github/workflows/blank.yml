@@ -18,8 +18,10 @@ jobs:
       run: D:\Xilinx\Vivado\2022.1\settings64.bat
       shell: cmd
 
-    - name: Create Vivado Project and Generate Bitstream
-      run: |
-        fusesoc library add jtag_to_axi_master . &&
-        fusesoc run --target=synth --setup --build --no-export jtag_to_axi_master
+    - name: Add fusesoc library
+      run: fusesoc library add jtag_to_axi_master .
+      shell: cmd
+
+    - name: Create Vivado project and run
+      run: fusesoc run --target=synth --setup --build --no-export jtag_to_axi_master
       shell: cmd
