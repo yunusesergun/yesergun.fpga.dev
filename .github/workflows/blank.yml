@@ -23,7 +23,7 @@ jobs:
       shell: cmd
 
     - name: Go to fusesoc.core directory
-      run: ls -lah
+      run: dir
       shell: cmd
 
     - name: Add fusesoc library
