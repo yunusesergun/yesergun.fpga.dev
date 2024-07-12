@@ -10,10 +10,17 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
+    - name: Set execution policy
+      run: |
+        Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
+      shell: pwsh
+
     - name: Set up Vivado environment
       run: |
         call "D:\Xilinx\Vivado\2022.1\settings64.bat"
-      
+      shell: cmd
+
     - name: Run build script
       run: |
         ./build-script.sh
+      shell: bash
