@@ -36,3 +36,8 @@ targets:
     tools:
       vivado:
         part: xc7a35tcpg236-1
+        mode: out_of_context
+        project_mode: false
+        jobs: 4
+        properties:
+          - {name: STEPS.SYNTH_DESIGN.ARGS.MORE_OPTIONS, value: "-mode out_of_context"}
