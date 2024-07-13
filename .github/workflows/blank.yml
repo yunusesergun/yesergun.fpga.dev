@@ -12,7 +12,7 @@ jobs:
 
     - name: Set execution policy
       run: Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
-      shell: powershell
+      shell: cmd
 
     - name: Set up Vivado environment
       run: D:\Xilinx\Vivado\2022.1\settings64.bat
