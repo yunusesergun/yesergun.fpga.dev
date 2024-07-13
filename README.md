@@ -4,8 +4,6 @@ Xilinx has an IP called `JTAG to AXI Master`. As far as I've seen in the literat
 
 ![capture0](assets/figure1.drawio.png)
 
-JTAG to AXI Master IP does not have an **address space**. Therefore, it can write to or read from any desired address. While doing this, there's no need to remove another IP from the project.
-
 Fundamentally, with this IP, we can access desired AXI-Lite or AXI Memory Mapped slave interface using `TCL console` after FPGA is programmed without need for any program other than Vivado, as shown in the figure above.
 
 ## Motivation
@@ -111,6 +109,8 @@ set bram_wt bram_wt
 create_hw_axi_txn $bram_wt [get_hw_axis hw_axi_1] -type write -address $addr_bram -data {0x01020304 0x05060708 090a0b0c 0d0e0f10} -len 4 -force
 run_hw_axi [get_hw_axi_txns $bram_wt]
 ```
+
+In the above commands, unlike the AXI-Lite setting, there are `-len 4` and multiple data values next to the `-data` part. The `-len` parameter specifies the number of data to be written/read. The `-data` parameter specifies the data to be written to the relevant addresses in address order. In the example above, the value `0x01020304` is written to the first address (`0xC0000000` address).
 
 After running the commands, the TCL lines will look like this:
 
