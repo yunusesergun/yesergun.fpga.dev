@@ -15,5 +15,5 @@ jobs:
       shell: powershell
 
     - name: Add fusesoc library and create Vivado project
-      run: D:\Xilinx\Vivado\2022.1\settings64.bat && cd jtag_to_axi_master/fpga && fusesoc library add jtag_to_axi_master . && fusesoc run --build-root ../../ --no-export --target project --setup --build f:yunus:jtag_to_axi_master --jobs=6
+      run: D:\Xilinx\Vivado\2022.1\settings64.bat && cd jtag_to_axi_master/fpga && fusesoc library add jtag_to_axi_master . && fusesoc run --build-root ../../../../../ --no-export --target project --setup --build f:yunus:jtag_to_axi_master --jobs=6
       shell: cmd
