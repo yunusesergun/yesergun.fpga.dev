@@ -12,14 +12,11 @@ jobs:
 
     - name: Set execution policy
       run: Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
-      shell: cmd
-
-    - name: Set up Vivado environment
-      run: D:\Xilinx\Vivado\2022.1\settings64.bat
-      shell: cmd
+      shell: powershell
 
     - name: Add fusesoc library and create Vivado project
       run: |
+        D:\Xilinx\Vivado\2022.1\settings64.bat
         cd fpga
         dir
         fusesoc library add jtag_to_axi_master .
