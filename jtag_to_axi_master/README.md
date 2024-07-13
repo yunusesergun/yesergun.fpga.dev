@@ -133,7 +133,7 @@ After running the commands, the TCL lines will look like this:
 
 ![capture11](assets/Capture11.png)
 
-Also, the transaction we created appears as follows in ILA.
+Also, the transaction we created appears as follows in ILA:
 
 ![capture12](assets/Capture12.png)
 
