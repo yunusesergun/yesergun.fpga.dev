@@ -14,7 +14,7 @@ Mesela; proje gereği **AXI IIC**, **AXI Quad SPI** ve **AXI Bram Controller** I
 
 Diğer alternatif çözümlerden de bahsetmek gerekir. Aşağıda diğer çözümler konusunda kısa anlatımlar yer alıyor:
 
-- Xilinx Vitis (eski adıyla Xilinx SDK) programının **xsct** desteği bulunmakta. Bunun için `MicroBlaze Debug Module (MDM)` IP'sine Microblaze IP'si ile birlikte ihtiyaç var. Ayrıca ayarlarından `Enable AXI Memory Access From Debug` seçeneğini açmak gerekiyor. Çeşitli işlemler sonrası `mwr` veya `mrd` komutlarıyla ilgili adreslere gerekli veriler yazılabilir. Microblaze IP'si gerekli olduğu için ekstra bir dezavantaj ortaya çıkıyor.
+- Xilinx Vitis (eski adıyla Xilinx SDK) programının **xsct** desteği bulunmakta. Bunun için `MicroBlaze Debug Module (MDM)` IP'si kullanılabilir (Microblaze IP'sine ihtiyaç bulunmamaktadır). Ayrıca ayarlarından `Enable AXI Memory Access From Debug` seçeneğini açmak gerekiyor. Çeşitli işlemler sonrası `mwr` veya `mrd` komutlarıyla ilgili adreslere gerekli veriler yazılabilir. Her ne kadar Microblaze IP'sine ihtiyaç olmasa da Vitis gibi başka programlara ihtiyaç duyulur.
 - Microblaze IP'sini tasarıma ekleyip Xilinx Vitis (veya Xilinx SDK) üzerinden `Memory` ekranını açarak ilgili adreslere gerekli veriler GUI yardımıyla yazılabilir.
 - İşletim sistemi kurabildiğimiz kartlarda `devmem` kullanılabilir.
 
