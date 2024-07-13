@@ -14,8 +14,12 @@ jobs:
       run: Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
       shell: powershell
 
+    - name: Move bit file to artifacts
+      run: mkdir -p artifacts && cp ../../../../../../f_yunus_jtag_to_axi_master_0/project-vivado/f_yunus_jtag_to_axi_master_0.runs/impl_1/design_1_wrapper.bit artifacts/
+      shell: bash
+
     - name: Upload artifacts
       uses: actions/upload-artifact@v2
       with:
         name: vivado-artifacts
-        path: ../../../../../../f_yunus_jtag_to_axi_master_0/project-vivado/f_yunus_jtag_to_axi_master_0.runs/impl_1/design_1_wrapper.bit, ../../../../../../f_yunus_jtag_to_axi_master_0/project-vivado/f_yunus_jtag_to_axi_master_0.runs/impl_1/design_1_wrapper.ltx
+        path: artifacts/design_1_wrapper.bit
