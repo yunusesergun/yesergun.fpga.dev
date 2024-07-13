@@ -15,7 +15,7 @@ jobs:
       shell: powershell
 
     - name: Move bit file to artifacts
-      run: dir && mkdir artifacts && copy ../../../../../../f_yunus_jtag_to_axi_master_0/project-vivado/f_yunus_jtag_to_axi_master_0.runs/impl_1/design_1_wrapper.bit artifacts/
+      run: dir && mkdir artifacts && copy ../../../../f_yunus_jtag_to_axi_master_0/project-vivado/f_yunus_jtag_to_axi_master_0.runs/impl_1/design_1_wrapper.bit artifacts/
       shell: cmd
 
     - name: Upload artifacts
