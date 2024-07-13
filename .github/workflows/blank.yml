@@ -24,3 +24,9 @@ jobs:
       with:
         name: vivado-artifacts
         path: artifacts/design_1_wrapper.bit
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: vivado-artifacts
+        path: artifacts/design_1_wrapper.ltx
