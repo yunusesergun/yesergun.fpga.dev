@@ -1,38 +1,31 @@
 CAPI=2:
-name: fusesoc:examples:jtag_to_axi_master:1.0.0
+name: f:yunus:jtag_to_axi_master:0-r0
 description: JTAG to AXI Master IP Example
 
 filesets:
-  rtl:
+  rtl_verilog:
     files:
       - rtl/design_1_wrapper.v
     file_type: verilogSource
 
-  blockDesign:
+  blockdesign:
     files:
       - rtl/blockDesign.tcl
     file_type: tclSource
 
-  xdc:
+  constraints:
     files:
       - xdc/pins.xdc
     file_type: xdc
 
 targets:
-  default: &default
-    filesets:
-      - rtl
-      - blockDesign
-      - xdc
-    toplevel: design_1_wrapper
-
-  synth:
-    <<: *default
+  default:
+    filesets : [rtl_verilog, constraints, blockdesign]
+  project:
     default_tool: vivado
-    filesets_append:
-      - rtl
-      - blockDesign
-      - xdc
+    filesets : [rtl_verilog, constraints, blockdesign]
+    toplevel : design_1_wrapper
     tools:
       vivado:
         part: xc7a35tcpg236-1
+        source_mgmt_mode: All
