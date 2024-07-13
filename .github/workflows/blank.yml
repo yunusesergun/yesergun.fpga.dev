@@ -14,12 +14,16 @@ jobs:
       run: Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
       shell: powershell
 
+    - name: Add fusesoc library and create Vivado project
+      run: D:\Xilinx\Vivado\2022.1\settings64.bat && cd jtag_to_axi_master/fpga && fusesoc library add jtag_to_axi_master . && fusesoc run --build-root ../../../../../../ --no-export --target project --setup --build f:yunus:jtag_to_axi_master --jobs=6
+      shell: cmd
+
     - name: Move bit file to artifacts
-      run: dir && mkdir artifacts && copy ..\..\..\..\f_yunus_jtag_to_axi_master_0\project-vivado\f_yunus_jtag_to_axi_master_0.runs\impl_1\design_1_wrapper.bit artifacts\
+      run: mkdir artifacts && copy ..\..\..\..\f_yunus_jtag_to_axi_master_0\project-vivado\f_yunus_jtag_to_axi_master_0.runs\impl_1\design_1_wrapper.bit artifacts\ && copy ..\..\..\..\f_yunus_jtag_to_axi_master_0\project-vivado\f_yunus_jtag_to_axi_master_0.runs\impl_1\design_1_wrapper.ltx artifacts\
       shell: cmd
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v2
       with:
         name: vivado-artifacts
-        path: artifacts/design_1_wrapper.bit
+        path: artifacts/design_1_wrapper.bit, artifacts/design_1_wrapper.ltx
