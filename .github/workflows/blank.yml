@@ -16,8 +16,8 @@ jobs:
 
     - name: Add fusesoc library and create Vivado project
       run: |
-        D:\Xilinx\Vivado\2022.1\settings64.bat &&
-        cd fpga &&
-        fusesoc library add jtag_to_axi_master . &&
+        D:\Xilinx\Vivado\2022.1\settings64.bat && 
+        cd fpga && 
+        fusesoc library add jtag_to_axi_master . && 
         fusesoc run --no-export --target project --setup --build f:yunus:jtag_to_axi_master
       shell: cmd
