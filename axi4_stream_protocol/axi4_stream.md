@@ -49,7 +49,7 @@ sinyaline ait çeşitli bilgileri içeren tablo bulunmaktadır:
 | TDATA       | Master              | Kesinlikle Önerilir             | 8n        | Master kısmının göndermek istediği veri, bu sinyal aracılığı ile taşınır. |
 | TLAST       | Master              | Kesinlikle Önerilir             | 1         | Master tarafından gönderilen **TDATA** verilerinin sonuncusunda kullanılan bu sinyal, o verinin son **TDATA** verisi olduğunu slave tarafına haber verir. Gönderilecek **TDATA** veri sayısı bir paket için bir veya birden fazla olabilir. |
 | TKEEP       | Master              | Kesinlikle Önerilir             | n         | Master kısmından taşınan **TDATA** sinyalindeki **geçerli** byte'ları slave tarafına iletir. Bu sayede slave tarafı, gelen verideki hangi byte'ları kullanıp hangi byte'ları çöpe atacağını/kullanmayacağını bilir. Bu yüzden boyutu daima verinin bit sayısının 8'de biridir. |
-| TSTRB       | Master              | Zorunlu Değil       | n         | **TDATA** sinyalindeki byte'ların veri byte'ı veya konum byte'ı olup olmadığını belirtir. Konum byte'ı, bir veri paketi içerisinde **TSTRB** içerisindeki bir bitin işaret ettiği **TDATA** byte'ının o paket içerisindeki göreceli yeri demektir. **TKEEP** ile birlikte kullanılan bir sinyaldir. Bu iki sinyalin arasındaki ilişkiye ait ayrıntılı bilgiden daha sonra bahsedilecektir. |
+| TSTRB       | Master              | Zorunlu Değil       | n         | **TDATA** sinyalindeki byte'ların veri byte'ı veya konum byte'ı olup olmadığını belirtir. Konum byte'ı, bir veri paketi içerisinde **TSTRB** içerisindeki bir bitin işaret ettiği **TDATA** byte'ının o paket içerisindeki göreceli yeri demektir. **TKEEP** ile birlikte kullanılabilen bir sinyaldir. Bu iki sinyalin arasındaki ilişkiye ait ayrıntılı bilgiden daha sonra bahsedilecektir. |
 | TID         | Master              | Zorunlu Değil       | a         | Verinin geldiği master kısmına ait özgün bir adres olarak tanımlanabilir. |
 | TDEST       | Master              | Zorunlu Değil       | b         | Verinin gideceği slave kısmına ait özgün bir adres olarak tanımlanabilir. |
 | TUSER       | Master              | Zorunlu Değil       | c         | İsminden de anlaşılacağı üzere kullanıcı, bu sinyal içerisine çeşitli yan bilgiler ekleyebilir. |
@@ -87,8 +87,7 @@ sürülmesi gerektiğinden bahsedilecektir.
 
 Bir önceki kısımda bulunan tablodan anlaşılacağı üzere master tarafı TVALID
 sinyalini slave tarafına, slave tarafı ise TREADY sinyalini master tarafına
-sürer. Bu sinyalleri sürerken uyulması gereken belli bir protokol vardır. Bu
-protokole `Handshake` ismi verilmiştir. Kelimeden de anlaşılacağı üzere bu işlem
+sürer. Bu iki sinyali sürerken uyulması gereken belli bir protokol vardır. Buna `Handshake` ismi verilmiştir. Kelimeden de anlaşılacağı üzere bu işlem
 sayesinde master ve slave tarafı el sıkışır ve bu el sıkışma sonucunda master
 tarafından slave tarafına veri akışı gerçekleşmiş olur.
 
@@ -102,7 +101,7 @@ vardır. Bu kurallar aşağıda listelenmiştir:
 - **KURAL 1: Master tarafı veriyi süreceği zaman TREADY sinyalinin 1 konumunda
   olmasını asla ama asla beklememelidir. Veri göndermeye hazır olduğunda veriyi
   TDATA sinyaline sürmeli ve yine aynı clock cycle içerisinde TVALID sinyalini 1
-  yapmalıdır. Kısacası; TVALID, TREADY sinyalinin 1 olmasını kesinlikle
+  sürmelidir. Kısacası; TVALID, TREADY sinyalinin 1 olmasını kesinlikle
   beklememelidir. Bu durum `Kural 3` ile ilişkilidir.**
 
 ![1](assets/axi4_stream/1.png)
@@ -145,22 +144,22 @@ oluşana kadar değişmemesi gerekir.
 
 - **KURAL 3: Slave tarafı, TREADY sinyalini sürerken rahat davranabilir. TVALID
   sinyalinin 1 olmasını bekleyebilir veya TVALID sinyalinin 1 olmasını
-  beklemeden 1 konumuna geçebilir.**
+  beklemeden 1 sürebilir.**
 
 ![6](assets/axi4_stream/6.png)
 
-Yukarıdaki figürde TREADY sinyali TVALID sürülmeden önce 1 yapılmıştır.
+Yukarıdaki figürde TREADY sinyali TVALID sürülmeden önce 1 sürülmüştür.
 
 ![7](assets/axi4_stream/7.png)
 
-Yukarıdaki figürde TREADY sinyali TVALID sürüldükten sonra 1 yapılmıştır.
+Yukarıdaki figürde TREADY sinyali TVALID sürüldükten sonra 1 sürülmüştür.
 
 ![8](assets/axi4_stream/8.png)
 
 Yukarıdaki figürde TREADY sinyali TVALID ile birlikte sürülmüştür.
 
-- **KURAL 4: Slave tarafından sürülen TREADY sinyali, handshake gerçekleşmeden 0
-  konumuna geçebilir/döndürülebilir.**
+- **KURAL 4: Slave tarafından 1 sürülen TREADY sinyaline, handshake gerçekleşmeden 0
+  sürülebilir.**
 
 ![9](assets/axi4_stream/9.png)
 
@@ -194,7 +193,7 @@ TLAST sinyali paket yapısı içerisinde gönderilen verilerin sonuncusunu belir
 için kullanılır. Aşağıda, TLAST kullanımına ait çeşitli kurallar bulunmaktadır:
 
 - **KURAL 1: Boyutu TDATA bit boyutundan daha büyük olan paketlerde, gönderilen
-  son verinin handshake durumunda TLAST 1 olarak sürülmelidir.**
+  son verinin handshake durumunda TLAST 1 olmalıdır.**
 
 ![12](assets/axi4_stream/12.png)
 
@@ -299,7 +298,7 @@ TSTRB, boyut olarak TKEEP ile aynı olmasına rağmen kullanış amacı olarak; 
 TSTRB bitine karşılık gelen TDATA byte'ının data byte'ı veya position byte'ı
 (konum) olduğu bilgisini taşır. AXI4-Stream protokolünü yaratan Arm şirketinin
 kendi sitesinde bile bu sinyalle alakalı neredeyse hiçbir bilgi veya örnek
-bulunmamaktadır. Açıkçası, hiçbir Xilinx IP'sinde bu sinyal kullanılmaz.
+bulunmamaktadır. Açıkçası, gördüğüm ve kullandığım hiçbir Xilinx IP'sinde bu sinyal kullanılmıyor.
 
 Bu sinyal TKEEP ile birlikte kullanılır. İkisinin 1/0 durumlarına göre verinin
 niteliği belirlenir. Aşağıda, TKEEP ve TSTRB sinyallerinin tüm kombinasyonları
@@ -347,22 +346,21 @@ korumuştur, sıfırlanmamıştır.
 
 TDEST, kullanım alanına bağlı olarak çoğunlukla verinin gideceği yere ait özgün
 bir adrestir. Bu sinyalin kullanımı ve kullanım kuralları TID ile tıpa tıp
-aynıdır. Sadece niteliği farklılık göstermektedir.
+aynıdır.
 
 ## TUSER Kullanımı
 
 TUSER sinyali, yan bir bilgi paylaşılmak isteniyorsa kullanılabilir. TDATA ile
-karıştırılmamalıdır, asıl paketin verilerini taşımaz. Kullanıma göre içerik
-niteliği değişebilir.
+karıştırılmamalıdır, asıl paketin verilerini taşımaz. Kullanıma göre içeriği değişebilir.
 
 Kullanımı ve kullanım kuralları itibariyle TID ve TDEST ile aynıdır fakat içerik
-bakımından Arm bile çok bir açıklama yer vermemiştir.
+bakımından Arm bile anlaşılır bir açıklamaya yer vermemiştir.
 
 ```{warning}
 TVALID sürülürken eğer başka bir sinyalin durumu değişecekse değişim TVALID ile birlikte yapılmalıdır. Bu protokol özelinde bir zorunluluk değil, öneridir. TVALID sürüldükten sonra (TREADY sinyalinin 1 olmadığı ve handshake gerçekleşmeyen durumda) diğer sinyallerde değişiklik yapmak hem kodun güvenirliğini azaltır hem de sinyallerin takip edilmesini zorlaştırır.
 ```
 
-## Ek Kaynaklar
+## Referanslar
 
 - Dan Gisselquist (takma ismiyle ZipCPU), blog yazılarının bir tanesinde
 AXI4-Stream konusunda yaptığı bir
@@ -381,9 +379,6 @@ paylaşmıştır.
   sinyalin sürülmesi takip edebilme ve güvenilirlik açısından sıkıntılara yol
   açabilir. Bu noktada ZipCPU haklı bir eleştiri yapmıştır.
 
-## Referans
-
-- Arm şirketinin AXI4-Stream ile ilgili hazırladığı bir site ve PDF var. Temel
-  olarak bu yazı, Arm şirketinin paylaştığı dokümanlara göre hazırlanmıştır. PDF
+- Arm şirketinin AXI4-Stream ile ilgili hazırladığı bir site ve PDF var. PDF
   hali [sitenin](https://developer.arm.com/documentation/ihi0051/a?lang=en)
   sonundaki **Download** tuşu ile indirilebilir.
