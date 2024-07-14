@@ -1,0 +1,21 @@
+{signal: [
+  ['Handshake',
+  {name: 'clk',           wave: 'P..........', period:2},
+  {name: 'TDATA',         wave: 'x.4.x......', period:2},
+  {name: 'TVALID',        wave: '0.10.......', period:2},
+  {name: 'TREADY',        wave: '0..10......', period:2},
+],
+
+],
+        edge: [
+    'c<->d 9.61 ns',
+    'g<->e 1 clock cycle',
+    'a<->b 16 clock cycle idle',
+  ],
+  head:
+    {text:
+      ['tspan',
+        ['tspan', {class:'info h5'}, '"TVALID Sinyalinin Handshake Öncesi Değiştirilmesi"']
+      ]
+    }
+}
