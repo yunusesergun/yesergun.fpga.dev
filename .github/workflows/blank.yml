@@ -1,6 +1,9 @@
 name: CI
 
-on: [push]
+on:
+  push:
+    paths:
+      - 'jtag_to_axi_master/**'
 
 jobs:
   build:
