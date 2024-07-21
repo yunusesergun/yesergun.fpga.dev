@@ -4,11 +4,11 @@
 
 Özellikle RTL tasarımcılarının doküman yazarken kullandıkları protokolleri çizmesi adına kullanması çok kolay bir program. Çok basit bir sentaksı var, öğrenmesi gayet kolay. Bu yazıda bu uygulamayı kullanarak nasıl waveform çizme işlemini yapabileceğimizi aktaracağım. Mantık devresi ve bitfield çizmeyi hiç kullanmadığım için o kısımlara ayrıntılı değinmeyeceğim.
 
-## Nasıl İndirilir
+## Nasıl Kurulur
 
 Online olarak [bu linkten](https://wavedrom.com/editor.html) kullanabiliyoruz fakat yine de bilgisayarımıza nasıl indirebileceğimizden de bahsedeyim.
 
-İndirmesi ve açması çok kolay. Ben Windows10 üzerinde kullandım. O yüzden sadece Windows10'da nasıl indirilir onu aktaracağım. Temelde bir github repository'si olduğu için Release kısmından gerekli .zip dosyası indirilmeli. Aşağıda Relase sayfasının linkini paylaştım:
+İndirmesi ve açması çok kolay. Ben Windows10 üzerinde kullandım. O yüzden sadece Windows10'da nasıl indirilir ve kullanılır onu aktaracağım. Temelde bir github repository'si olduğu için Release kısmından gerekli .zip dosyası indirilmeli. Aşağıda Relase sayfasının linkini paylaştım:
 
 [Wavedrom İndirme Linki](https://github.com/wavedrom/wavedrom.github.io/releases)
 
@@ -115,9 +115,9 @@ Bu kod sonrası wavedrom uygulaması içerisinde aşağıdaki gibi bir görünt�
 
 ![capture3](./assets/wavedrom3.svg)
 
-Görüldüğü üzere sinyale hiçbir değer tanımlaması yapılmadığı için `Don't Care` şeklinde gözüküyor. Kesme işareti içerisinde yer alan nokta işareti en son tanımlanan sinyali devam ettirmek için kullanılır, bu sayede her cycle içinde sinyali tekrar tekrar tanımlamaya gerek kalmaz.
+Görüldüğü üzere sinyale hiçbir değer tanımlaması yapılmadığı için `Don't Care` şeklinde gözüküyor. Kesme işareti içerisinde yer alan nokta işareti en son tanımlanan sinyal değerini devam ettirmek için kullanılır, bu sayede her cycle içinde sinyali tekrar tekrar tanımlamaya gerek kalmaz.
 
-- Not: Sinyal tanımlanmış olsa bile farklı cycle içerisinde `Don't Care` gözüksün isteniyorsa `x` işareti kullanılabilir.
+- Not: Sinyal değeri tanımlanmış olsa bile farklı cycle içerisinde `Don't Care` gözüksün isteniyorsa `x` işareti kullanılabilir.
 
 "wave" ile tanımlanabilecek sinyal çeşitlerini aşağıda madde madde listeledim:
 
@@ -398,7 +398,7 @@ Program, dokümantasyon işlerinde ve modül seviyesinde mimari kurabilmek için
 
 ![capture15](./assets/wavedrom15.png)
 
-Bir de `bitfield` çizme özelliği var. Bu özelliği de henüz deneyimlemedim ama görüntü olarak çok iyi duruyor ve kullanımı gerçekten çok basit. Bitfield özelliği sayesinde paket içeriği tanımlamaları yapabiliyoruz. Aşağıya kendi paylaştıkları örnek kodu ve bitfield görüntüsünü ekledim:
+Bir de `bitfield` çizme özelliği var. Bu özelliği de henüz deneyimlemedim ama görüntü olarak çok iyi duruyor ve kullanımı gerçekten çok basit. Bitfield özelliği sayesinde paket içeriği tanımlamaları yapabiliyoruz (mesela ethernet paketi). Aşağıya kendi paylaştıkları örnek kodu ve bitfield görüntüsünü ekledim:
 
 ```text
 {
