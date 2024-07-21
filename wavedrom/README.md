@@ -191,11 +191,15 @@ Görüldüğü üzere sinyale hiçbir değer tanımlaması yapılmadığı için
 ```text
 {
   signal: [
-    // Signal properties
+    // Signal-1 properties
     {
-        name: 'example_signal',
-        wave: 'x2.3.4.5.6.7.8.9.',
-        data: ['2', '3', '4', '5', '6', '7', '8', '9']
+        name: 'example_signal-1',
+        wave: '.n...|........'
+    },
+    // Signal-2 properties
+    {
+        name: 'example_signal-2',
+        wave: '1..01|........'
     }
   ]
 }
