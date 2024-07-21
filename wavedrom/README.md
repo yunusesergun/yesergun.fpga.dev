@@ -237,7 +237,7 @@ Yukarıdaki `example_signal-1` sinyalinin periyodu default haline kıyasla 2 kat
 
 ## "phase" Kullanımı
 
-`phase` ile faz vermek mümkün. 1 periyot değeri kadar faz değişimi için (360 derece) 1 değeri vermek gerekir. Yani 1 periyot, 0 ve 1 değerleri arasına sığdırılmıştır. `periyod`' key'inde olduğu gibi burada da kesme işareti kulllanılmaz. Aşağıda örnek bir kod ve waveformu bulunmaktadır:
+`phase` ile faz vermek mümkün. 1 periyot değeri kadar faz değişimi için (360 derece) 1 değeri vermek gerekir. Yani 1 periyot, 0 ve 1 değerleri arasına sığdırılmıştır. `periyod` key'inde olduğu gibi burada da kesme işareti kulllanılmaz. Aşağıda örnek bir kod ve waveformu bulunmaktadır:
 
 ```text
 {
