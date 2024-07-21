@@ -1,12 +1,12 @@
 # Wavedrom
 
-`Wavedrom` diye bir uygulama var. Bu uygulama sayesinde waveform çizebiliyoruz. Çizimi yapması için `json` dilinde kendine has bir sentaksı kullanıyoruz. Bu tarz bir uygulamayı kullanmak doküman yazma konusunda çok yardımcı oluyor.
+`Wavedrom` diye bir uygulama var. Bu uygulama sayesinde waveform, basit mantık devresi ve bitfield çizebiliyoruz. Çizimi yapması için `JSON` dilinde kendine has bir sentaksı kullanıyoruz. Bu tarz bir uygulamayı kullanmak doküman yazma konusunda çok yardımcı oluyor. JSON dilini bilmenize gerek yok (ben de bilmiyorum çok). Bu tutorial işinizi görecektir.
 
-Özellikle RTL tasarımcılarının doküman yazarken kullandıkları protokolleri çizmesi adına kullanması çok kolay bir program. Çok basit bir sentaksı var, öğrenmesi gayet kolay. Bu yazıda bu uygulamayı kullanarak nasıl waveform çizme işlemini yapabileceğimizi aktaracağım.
+Özellikle RTL tasarımcılarının doküman yazarken kullandıkları protokolleri çizmesi adına kullanması çok kolay bir program. Çok basit bir sentaksı var, öğrenmesi gayet kolay. Bu yazıda bu uygulamayı kullanarak nasıl waveform çizme işlemini yapabileceğimizi aktaracağım. Mantık devresi ve bitfield çizmeyi hiç kullanmadığım için o kısımlara ayrıntılı değinmeyeceğim.
 
 ## Nasıl İndirilir
 
-Online olarak [bu linkten](https://wavedrom.com/editor.html) kullanabiliyoruz fakat yine de bilgisayarımıza nnasıl indirebileceğimizden de bahsedeyim.
+Online olarak [bu linkten](https://wavedrom.com/editor.html) kullanabiliyoruz fakat yine de bilgisayarımıza nasıl indirebileceğimizden de bahsedeyim.
 
 İndirmesi ve açması çok kolay. Ben Windows10 üzerinde kullandım. O yüzden sadece Windows10'da nasıl indirilir onu aktaracağım. Temelde bir github repository'si olduğu için Release kısmından gerekli .zip dosyası indirilmeli. Aşağıda Relase sayfasının linkini paylaştım:
 
@@ -14,11 +14,7 @@ Online olarak [bu linkten](https://wavedrom.com/editor.html) kullanabiliyoruz fa
 
 Ben 3.4.0 versiyonunu kullandım (şu an en güncel versiyon bu). O yüzden `wavedrom-editor-v3.4.0-win-x64.zip` isimli dosyayı indirdim.
 
-Kullanım olarak da .zip dosyasını açıp bilgisayarda herhangi bir yere kopyalayabilirsiniz. Sonrasında `wavedrom-editor.exe` çalıştırılacak program açılabilir.
-
-Ayrıca, kendi yayınladıkları wavedrom guide var. Daha ayrıntılı özelliklerden bahsediyorlar. Onu açmak için de aşağıdaki görseldeki belirtilen yerde guide bulunabilir:
-
-![capture14](./assets/wavedrom14.png)
+Kullanım olarak da .zip dosyasını açıp bilgisayarda herhangi bir yere kopyalayabilirsiniz. Sonrasında `wavedrom-editor.exe` çalıştırılarak program açılabilir.
 
 ## Örnek Gösterim
 
@@ -76,11 +72,11 @@ Yukarıdaki kodu parçalara ayırarak nasıl yazıldığına bakalım:
 
 ## Sinyal Tanımlama
 
-Sinyalleri tanımlamak ve çeşitli özellikler eklemek için `signal[]` kullanılır. Sonrasında waveform üzeirinde oluşturacağımız her bir satır için `{}` kullanırız ve son satıra kadar her `{}` sonrası virgül koymamız gerekir. Bu durumlar aslında `.json` sentaksıyla ilgili bir durumdur. Wavedrom'a özgü bir kural değildir.
+Sinyalleri tanımlamak ve çizim ile ilgili olarak çeşitli özellikler eklemek için `signal[]` key'i kullanılır. Sonrasında waveform üzerinde oluşturacağımız her bir satır için `{}` yani parantez kullanırız ve son satıra kadar her parantez sonrası virgül koymamız gerekir. Bu durumlar aslında `.json` sentaksıyla ilgili bir durumdur. Wavedrom'a özgü bir kural değildir.
 
-Parantez içerisinde tanımlayacabileceğimiz değişkenler kısıtlıdır. `name`, `wave`, `node`, `data`, `period` ve `phase` tanımlanabilir. Ben, bunların dışında wavedrom uygulamasının anladığı bir değişken ismi göremedim. Bu dört değişken zaten yeterli oluyor.
+Parantez içerisinde tanımlayacabileceğimiz itemler kısıtlıdır ama yeterlidir. `name`, `wave`, `node`, `data`, `period` ve `phase` tanımlanabilir. Ben, bunların dışında wavedrom uygulamasının anladığı bir item ismi göremedim. Bu altı item zaten yeterli oluyor.
 
-## Name Kullanımı
+## "name" Kullanımı
 
 `name` ile sinyal ismi tanımlanır. `name:` ifadesi sonrası kesme işareti içerisine tanımlamak istediğimiz sinyal ismini yazarız. Aşağıda örnek bir .json kodu bulunuyor:
 
@@ -99,9 +95,9 @@ Bu kod sonrası wavedrom uygulaması içerisinde aşağıdaki gibi bir görünt�
 
 ![capture2](./assets/wavedrom2.svg)
 
-## Wave ve Data Kullanımı
+## "wave" ve "data" Kullanımı
 
-Yukarıda da bariz şekilde göründüğü üzere sinyal tanımlaması var ama waveform yok. Waveform tanımlaması yapmak için aynı parantez içerisine `wave` tanımlamamız gerekir. Aşağıda örnek bir kod bulunuyor:
+Bir yukarıdaki görselde bariz şekilde göründüğü üzere sinyal tanımlaması var ama waveform yok. Waveform tanımlaması yapmak için aynı parantez içerisine `wave` item'i tanımlamamız gerekir. Aşağıda örnek bir kod bulunuyor:
 
 ```text
 {
@@ -123,9 +119,9 @@ Görüldüğü üzere sinyale hiçbir değer tanımlaması yapılmadığı için
 
 - Not: Sinyal tanımlanmış olsa bile farklı cycle içerisinde `Don't Care` gözüksün isteniyorsa `x` işareti kullanılabilir.
 
-Tanımlanabilecek sinyal çeşitlerini aşağıda listeledim:
+"wave" ile tanımlanabilecek sinyal çeşitlerini aşağıda madde madde listeledim:
 
-- `0` ve `1` tanımlamaları yaparak biraz daha gerçek hayatta görebileceğimiz sinyaller elde ederiz. Gerçek hayattan kasıt şudur ki sinyallerin setup ve hold zamanları daha net gözükür fakat setup ve hold zamanlarını ayarlamak mümkün değildir. Aşağıda örnek bir kod ve waveformu bulunmaktadır:
+- `0` ve `1` tanımlamaları yaparak gerçek hayatta görebileceğimiz sinyaller elde edebiliriz. Gerçek hayattan kasıt şudur ki sinyallerin setup ve hold zamanları daha net gözükür fakat setup ve hold zamanlarını ayarlamak mümkün değildir. Aşağıda örnek bir kod ve waveformu bulunmaktadır:
 
 ```text
 {
@@ -141,7 +137,7 @@ Tanımlanabilecek sinyal çeşitlerini aşağıda listeledim:
 
 ![capture4](./assets/wavedrom4.svg)
 
-- `p` ve `n` tanımlamaları yaparak positive-negative edge periyodik sinyal üretilebilir. Aşağıda örnek bir kod ve waveformu bulunmaktadır:
+- `p` ve `n` tanımlamaları yaparak positive-negative edge ile başlayan periyodik sinyal üretilebilir. Aşağıda örnek bir kod ve waveformu bulunmaktadır:
 
 ```text
 {
@@ -157,7 +153,7 @@ Tanımlanabilecek sinyal çeşitlerini aşağıda listeledim:
 
 ![capture5](./assets/wavedrom5.svg)
 
-- `P` ve `N`tanımalamaları yaparak positive-negative edge ile başlayan clock sinyali üretilebilir. `P` ifadesiyle sinyalleri rising-edge ile örneklediğimizi, `N` ifadesiyle de sinyalleri falling-edge ile örneklediğimizi belirtmiş oluruz. Aşağıda örnek bir kod ve waveformu bulunmaktadır:
+- `P` ve `N` tanımalamaları yaparak positive-negative edge ile başlayan clock sinyali üretilebilir. `P` ifadesiyle sinyalleri rising-edge ile örneklediğimizi, `N` ifadesiyle de sinyalleri falling-edge ile örneklediğimizi belirtmiş oluruz. Aşağıda örnek bir kod ve waveformu bulunmaktadır:
 
 ```text
 {
@@ -173,7 +169,7 @@ Tanımlanabilecek sinyal çeşitlerini aşağıda listeledim:
 
 ![capture7](./assets/wavedrom7.svg)
 
-- 2'den 9'a kadar sayılar kullanılarak `data` tanımlaması yapılabilir. Ayrıca, `data:` isminde yeni bir değişken tanımlayarak köşeli parantez ile data içerisine istediğimiz yazıyı yazabiliriz. Aşağıda örnek bir kod ve waveformu bulunmaktadır:
+- 2'den 9'a kadar sayılar kullanılarak `data` tanımlaması yapılabilir. Ayrıca, `data:` isminde yeni bir key tanımlayarak köşeli parantez ile data içerisine istediğimiz yazıyı yazabiliriz. Aşağıda örnek bir kod ve waveformu bulunmaktadır:
 
 ```text
 {
@@ -190,9 +186,9 @@ Tanımlanabilecek sinyal çeşitlerini aşağıda listeledim:
 
 ![capture6](./assets/wavedrom6.svg)
 
-## Periyod Kullanımı
+## "periyod" Kullanımı
 
-`period` ile ilgili sinyalin boyutu tanımlanan değere göre büyütülebilir. Bu sefer kesme işaretine gerek duyulmaz. Sıfır hariç tüm doğal sayılar kullanılabilir. Aşağıda örnek bir kod ve waveformu bulunmaktadır:
+`period` kullanılarak, ilgili sinyalin boyutu tanımlanan değere göre büyütülebilir. Bu sefer kesme işaretine gerek duyulmaz. Sıfır hariç tüm doğal sayılar kullanılabilir. Aşağıda örnek bir kod ve waveformu bulunmaktadır:
 
 ```text
 {
@@ -216,11 +212,11 @@ Tanımlanabilecek sinyal çeşitlerini aşağıda listeledim:
 
 ![capture9](./assets/wavedrom9.svg)
 
-Yukarıdaki `example_signal-1` sinyalinin periyodu 2 katına çıkarılmıştır.
+Yukarıdaki `example_signal-1` sinyalinin periyodu default haline kıyasla 2 katına çıkarılmıştır.
 
-## Phase Kullanımı
+## "phase" Kullanımı
 
-`phase` ile faz vermek mümkün. 1 periyot değeri kadar faz değişimi için 1 değeri vermek gerekir. Yani 1 periyot 0 ve 1 değerleri arasına sığdırılmıştır. `periyod`'ta olduğu gibi burada da kesme işareti kulllanılmaz. Aşağıda örnek bir kod ve waveformu bulunmaktadır:
+`phase` ile faz vermek mümkün. 1 periyot değeri kadar faz değişimi için (360 derece) 1 değeri vermek gerekir. Yani 1 periyot, 0 ve 1 değerleri arasına sığdırılmıştır. `periyod`' key'inde olduğu gibi burada da kesme işareti kulllanılmaz. Aşağıda örnek bir kod ve waveformu bulunmaktadır:
 
 ```text
 {
@@ -245,11 +241,11 @@ Yukarıdaki `example_signal-1` sinyalinin periyodu 2 katına çıkarılmıştır
 
 ![capture10](./assets/wavedrom10.svg)
 
-## Node Kullanımı
+## "node" Kullanımı
 
-`node` ile yeni bir satırda sinyaller özelinde ok işaretleriyle tanımlamalar yapmak mümkün. Aslında wavedrom uygulamasının kendi guide'ında ayrıntılı bir şekilde neler yapılabilir göstermiş ama ben kısa bir örnek göstereceğim. Daha kompleks kullanımlar için paylaştıkları guide'ı incelemenizi öneririm.
+`node` ile yeni bir satırda sinyaller özelinde ok işaretleriyle gösterimler yapmak mümkün. Aslında wavedrom uygulamasının kendi guide'ında ayrıntılı bir şekilde neler yapılabilir göstermiş ama ben kısa bir örnek göstereceğim. Daha kompleks kullanımlar için paylaştıkları guide'ı incelemenizi öneririm.
 
-`node` kullanmak için `signal` alanı haricinde bir de `edge` alanı tanımlamamız gerekir. Bu alan içerisinde kesme işareti içerisinde ilk önce ok işaretlerinin ucunda gözükecek harf tanımlamasını yaparız. Harf dışarısında bir şey kullanmayı önermem. Sonrasında boşluk bırakarak oklar arasında gözükecek ifadeyi yazarız. Aşağıda örnek bir kod ve waveformu bulunmaktadır:
+`node` kullanmak için `signal` haricinde bir de `edge` tanımlamamız gerekir. Bu alan içerisinde kesme işareti içerisinde ilk önce ok işaretlerinin ucunda gözükecek harf tanımlamasını yaparız. Sonrasında boşluk bırakarak oklar arasında gözükecek ifadeyi yazarız. Aşağıda örnek bir kod ve waveformu bulunmaktadır:
 
 ```text
 {
@@ -298,7 +294,7 @@ Bunlara ek olarak; eğer iki sinyal arasında (2 satır) boşluk oluşmasını i
 
 ![capture8](./assets/wavedrom8.svg)
 
-Son olarak tüm sinyalleri etkileyecek şekilde scaling ile oynayabiliyoruz. Bunun için `signal` ve `edge` gibi `config` diye bir alan açıyoruz ve burada `hscale` tanımlaması yapıyoruz. Bu sefer `config` tanımlaması yaparken köşeli parantez kullanmamıza gerek kalmaz. Aşağıda örnek bir kod ve waveformu bulunmaktadır:
+Son olarak tüm sinyalleri etkileyecek şekilde scaling ile oynayabiliyoruz. Bunun için `signal` ve `edge` gibi `config` diye bir alan açıyoruz ve burada `hscale` tanımlaması yapıyoruz. `signal` içerisinde olduğundan farklı olarak `config` tanımlaması yaparken köşeli parantez kullanmamıza gerek kalmaz. Aşağıda örnek bir kod ve waveformu bulunmaktadır:
 
 ```text
 {
@@ -360,9 +356,13 @@ Aşağıda `hscale: 4` yapılmış kod ve waveform bulunuyor:
 
 ![capture13](./assets/wavedrom13.svg)
 
+Bu kadar anlattım evet ama kendi yayınladıkları wavedrom guide da var. Daha ayrıntılı özelliklerden ve kullanımlardan bahsediyor. Onu açmak için de aşağıdaki görseldeki belirtilen yerde guide bulunabilir:
+
+![capture14](./assets/wavedrom14.png)
+
 ## Son Notlar
 
-Program dokümantasyon işlerinde ve modül seviyesinde mimari kurabilmek için çok iyi. Bunun yanında basit düzeyde şematik çizimi de yapabiliyor. Fakat, ben bu özelliği henüz deneyimlemedim. Kullanılabileceği birçok yer olur diye üdşünüyorum. Aşağıya kendi paylaştıkları örnek kodu ve şematik görüntüsünü ekledim:
+Program, dokümantasyon işlerinde ve modül seviyesinde mimari kurabilmek için çok iyi. Bunun yanında basit düzeyde `mantık devresi` çizimi de yapabiliyor. Fakat, ben bu özelliği henüz deneyimlemedim. Kullanılabileceği birçok yer olur diye düşünüyorum. Aşağıya kendi paylaştıkları örnek kodu ve mantık devre görüntüsünü ekledim:
 
 ```text
 { assign:[
@@ -377,7 +377,7 @@ Program dokümantasyon işlerinde ve modül seviyesinde mimari kurabilmek için 
 
 ![capture15](./assets/wavedrom15.png)
 
-Bir de bitfield çizme özelliği var. Bu özelliği de henüz deneyimlemedim ama görüntü olarak çok iyi duruyor ve kullanımı gerçekten çok basit. Bitfield özelliği sayesinde paket içeriği tanımlamaları yapabiliyoruz. Aşağıya kendi paylaştıkları örnek kodu ve bitfield görüntüsünü ekledim:
+Bir de `bitfield` çizme özelliği var. Bu özelliği de henüz deneyimlemedim ama görüntü olarak çok iyi duruyor ve kullanımı gerçekten çok basit. Bitfield özelliği sayesinde paket içeriği tanımlamaları yapabiliyoruz. Aşağıya kendi paylaştıkları örnek kodu ve bitfield görüntüsünü ekledim:
 
 ```text
 {
