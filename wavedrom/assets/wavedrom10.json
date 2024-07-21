@@ -1,0 +1,18 @@
+{
+  signal: [
+        // Signal-1 properties
+        {
+            name: 'example_signal-1',
+			wave: 'P................',
+          period: 1,
+           phase: 0.2
+        },
+    	{},
+        // Signal-2 properties
+        {
+            name: 'example_signal-2',
+			wave: 'x2.3.4.5.6.7.8.9.',
+          	data: ['2', '3', '4', '5', '6', '7', '8', '9']
+        }
+  ]
+}

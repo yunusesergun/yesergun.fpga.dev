@@ -1,0 +1,17 @@
+{
+  signal: [
+        // Signal-1 properties
+        {
+            name: 'example_signal-1',
+			wave: 'P................',
+          period: 2,
+           phase: 0
+        },
+    	{
+        	node: 'c.d............'
+        },
+  ],
+  edge: [
+    'c<->d 40 ns'
+  ]
+}
