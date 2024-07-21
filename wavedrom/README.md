@@ -186,6 +186,23 @@ Görüldüğü üzere sinyale hiçbir değer tanımlaması yapılmadığı için
 
 ![capture6](./assets/wavedrom6.svg)
 
+- `|` ifadesiyle uzun süre aynı kalan sinyalleri belirtebiliyoruz. Böylece waveformu daha optimize etmiş oluyoruz. Aşağıda örnek bir kod ve waveformu bulunmaktadır:
+
+```text
+{
+  signal: [
+    // Signal properties
+    {
+        name: 'example_signal',
+        wave: 'x2.3.4.5.6.7.8.9.',
+        data: ['2', '3', '4', '5', '6', '7', '8', '9']
+    }
+  ]
+}
+```
+
+![capture17](./assets/wavedrom17.svg)
+
 ## "periyod" Kullanımı
 
 `period` kullanılarak, ilgili sinyalin boyutu tanımlanan değere göre büyütülebilir. Bu sefer kesme işaretine gerek duyulmaz. Sıfır hariç tüm doğal sayılar kullanılabilir. Aşağıda örnek bir kod ve waveformu bulunmaktadır:
