@@ -1,6 +1,6 @@
 # Wavedrom
 
-`Wavedrom` diye bir uygulama var. Bu uygulama sayesinde waveform, basit mantık devresi ve bitfield çizebiliyoruz. Çizimi yapması için `JSON` dilinde kendine has bir sentaksı kullanıyoruz. Bu tarz bir uygulamayı kullanmak doküman yazma konusunda çok yardımcı oluyor. JSON dilini bilmenize gerek yok (ben de bilmiyorum çok). Bu tutorial işinizi görecektir.
+`Wavedrom` diye bir uygulama var. Bu uygulama sayesinde waveform, basit mantık devresi ve bitfield çizebiliyoruz. Çizimi yapması için `JSON` kullanıyoruz. Bu tarz bir uygulamayı kullanmak doküman yazma konusunda çok yardımcı oluyor. JSON'ı bilmenize gerek yok (ben de bilmiyorum çok). Bu tutorial waveform çizmek için işinizi görecektir.
 
 Özellikle RTL tasarımcılarının doküman yazarken kullandıkları protokolleri çizmesi adına kullanması çok kolay bir program. Çok basit bir sentaksı var, öğrenmesi gayet kolay. Bu yazıda bu uygulamayı kullanarak nasıl waveform çizme işlemini yapabileceğimizi aktaracağım. Mantık devresi ve bitfield çizmeyi hiç kullanmadığım için o kısımlara ayrıntılı değinmeyeceğim.
 
