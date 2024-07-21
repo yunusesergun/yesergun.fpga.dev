@@ -28,7 +28,7 @@ Ayrıca, kendi yayınladıkları wavedrom guide var. Daha ayrıntılı özellikl
 
 Yukarıda örnek olarak paylaştığım wavedrom görselinin kaynak kodu aşağıda verilmiştir:
 
-```json
+```text
 {
   signal: [
     // clk signal properties
@@ -84,7 +84,7 @@ Parantez içerisinde tanımlayacabileceğimiz değişkenler kısıtlıdır. `nam
 
 `name` ile sinyal ismi tanımlanır. `name:` ifadesi sonrası kesme işareti içerisine tanımlamak istediğimiz sinyal ismini yazarız. Aşağıda örnek bir .json kodu bulunuyor:
 
-```json
+```text
 {
   signal: [
     // Signal properties
@@ -103,7 +103,7 @@ Bu kod sonrası wavedrom uygulaması içerisinde aşağıdaki gibi bir görünt�
 
 Yukarıda da bariz şekilde göründüğü üzere sinyal tanımlaması var ama waveform yok. Waveform tanımlaması yapmak için aynı parantez içerisine `wave` tanımlamamız gerekir. Aşağıda örnek bir kod bulunuyor:
 
-```json
+```text
 {
   signal: [
     // Signal properties
@@ -127,7 +127,7 @@ Tanımlanabilecek sinyal çeşitlerini aşağıda listeledim:
 
 - `0` ve `1` tanımlamaları yaparak biraz daha gerçek hayatta görebileceğimiz sinyaller elde ederiz. Gerçek hayattan kasıt şudur ki sinyallerin setup ve hold zamanları daha net gözükür fakat setup ve hold zamanlarını ayarlamak mümkün değildir. Aşağıda örnek bir kod ve waveformu bulunmaktadır:
 
-```json
+```text
 {
   signal: [
     // Signal properties
@@ -143,7 +143,7 @@ Tanımlanabilecek sinyal çeşitlerini aşağıda listeledim:
 
 - `p` ve `n` tanımlamaları yaparak positive-negative edge periyodik sinyal üretilebilir. Aşağıda örnek bir kod ve waveformu bulunmaktadır:
 
-```json
+```text
 {
   signal: [
     // Signal properties
@@ -159,7 +159,7 @@ Tanımlanabilecek sinyal çeşitlerini aşağıda listeledim:
 
 - `P` ve `N`tanımalamaları yaparak positive-negative edge ile başlayan clock sinyali üretilebilir. `P` ifadesiyle sinyalleri rising-edge ile örneklediğimizi, `N` ifadesiyle de sinyalleri falling-edge ile örneklediğimizi belirtmiş oluruz. Aşağıda örnek bir kod ve waveformu bulunmaktadır:
 
-```json
+```text
 {
   signal: [
     // Signal properties
@@ -175,7 +175,7 @@ Tanımlanabilecek sinyal çeşitlerini aşağıda listeledim:
 
 - 2'den 9'a kadar sayılar kullanılarak `data` tanımlaması yapılabilir. Ayrıca, `data:` isminde yeni bir değişken tanımlayarak köşeli parantez ile data içerisine istediğimiz yazıyı yazabiliriz. Aşağıda örnek bir kod ve waveformu bulunmaktadır:
 
-```json
+```text
 {
   signal: [
     // Signal properties
@@ -194,7 +194,7 @@ Tanımlanabilecek sinyal çeşitlerini aşağıda listeledim:
 
 `period` ile ilgili sinyalin boyutu tanımlanan değere göre büyütülebilir. Bu sefer kesme işaretine gerek duyulmaz. Sıfır hariç tüm doğal sayılar kullanılabilir. Aşağıda örnek bir kod ve waveformu bulunmaktadır:
 
-```json
+```text
 {
   signal: [
     // Signal-1 properties
@@ -222,7 +222,7 @@ Yukarıdaki `example_signal-1` sinyalinin periyodu 2 katına çıkarılmıştır
 
 `phase` ile faz vermek mümkün. 1 periyot değeri kadar faz değişimi için 1 değeri vermek gerekir. Yani 1 periyot 0 ve 1 değerleri arasına sığdırılmıştır. `periyod`'ta olduğu gibi burada da kesme işareti kulllanılmaz. Aşağıda örnek bir kod ve waveformu bulunmaktadır:
 
-```json
+```text
 {
   signal: [
     // Signal-1 properties
@@ -251,7 +251,7 @@ Yukarıdaki `example_signal-1` sinyalinin periyodu 2 katına çıkarılmıştır
 
 `node` kullanmak için `signal` alanı haricinde bir de `edge` alanı tanımlamamız gerekir. Bu alan içerisinde kesme işareti içerisinde ilk önce ok işaretlerinin ucunda gözükecek harf tanımlamasını yaparız. Harf dışarısında bir şey kullanmayı önermem. Sonrasında boşluk bırakarak oklar arasında gözükecek ifadeyi yazarız. Aşağıda örnek bir kod ve waveformu bulunmaktadır:
 
-```json
+```text
 {
   signal: [
     // Signal-1 properties
@@ -277,7 +277,7 @@ Yukarıdaki `example_signal-1` sinyalinin periyodu 2 katına çıkarılmıştır
 
 Bunlara ek olarak; eğer iki sinyal arasında (2 satır) boşluk oluşmasını istiyorsak içi boş parantezler koymamız yeterli. Aşağıda örnek bir kod ve waveformu bulunmaktadır:
 
-```json
+```text
 {
   signal: [
     // Signal-1 properties
@@ -300,7 +300,7 @@ Bunlara ek olarak; eğer iki sinyal arasında (2 satır) boşluk oluşmasını i
 
 Son olarak tüm sinyalleri etkileyecek şekilde scaling ile oynayabiliyoruz. Bunun için `signal` ve `edge` gibi `config` diye bir alan açıyoruz ve burada `hscale` tanımlaması yapıyoruz. Bu sefer `config` tanımlaması yaparken köşeli parantez kullanmamıza gerek kalmaz. Aşağıda örnek bir kod ve waveformu bulunmaktadır:
 
-```json
+```text
 {
   signal: [
     // Signal-1 properties
@@ -331,7 +331,7 @@ Son olarak tüm sinyalleri etkileyecek şekilde scaling ile oynayabiliyoruz. Bun
 
 Aşağıda `hscale: 4` yapılmış kod ve waveform bulunuyor:
 
-```json
+```text
 {
   signal: [
     // Signal-1 properties
@@ -364,7 +364,7 @@ Aşağıda `hscale: 4` yapılmış kod ve waveform bulunuyor:
 
 Program dokümantasyon işlerinde ve modül seviyesinde mimari kurabilmek için çok iyi. Bunun yanında basit düzeyde şematik çizimi de yapabiliyor. Fakat, ben bu özelliği henüz deneyimlemedim. Kullanılabileceği birçok yer olur diye üdşünüyorum. Aşağıya kendi paylaştıkları örnek kodu ve şematik görüntüsünü ekledim:
 
-```json
+```text
 { assign:[
   ["out",
     ["|",
@@ -379,7 +379,7 @@ Program dokümantasyon işlerinde ve modül seviyesinde mimari kurabilmek için 
 
 Bir de bitfield çizme özelliği var. Bu özelliği de henüz deneyimlemedim ama görüntü olarak çok iyi duruyor ve kullanımı gerçekten çok basit. Bitfield özelliği sayesinde paket içeriği tanımlamaları yapabiliyoruz. Aşağıya kendi paylaştıkları örnek kodu ve bitfield görüntüsünü ekledim:
 
-```json
+```text
 {
     reg: [
         {
