@@ -1,0 +1,17 @@
+{
+  signal: [
+  		{name: 'clk',  			wave: 'p.|...........'},
+    						   {node: 'cd............'},
+    	{name: 'rst_n',  		wave: '10|1..........'},
+    	{name: 'axis_tvalid',  	wave: '0.|..1...0..10'},
+    					   	   {node: '.........a..b.'},
+    	{name: 'axis_tready',  	wave: '0.|.1.0.1.....'},
+  		{name: 'axis_tdata', 	wave: 'x.|..34..x..5x', data: ['head', 'body', 'tail']}
+  ],
+  config: { hscale: 2 },
+  edge: [
+  	'a<->b SOME DELAY',
+    'c<->d 40 ns'
+  ]
+
+}

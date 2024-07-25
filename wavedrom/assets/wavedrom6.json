@@ -1,0 +1,10 @@
+{
+  signal: [
+        // Signal properties
+        {
+            name: 'example_signal',
+			wave: 'x2.3.4.5.6.7.8.9.',
+          	data: ['2', '3', '4', '5', '6', '7', '8', '9']
+        }
+  ]
+}

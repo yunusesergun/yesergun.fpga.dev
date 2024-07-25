@@ -1,0 +1,9 @@
+{
+  signal: [
+        // Signal properties
+        {
+            name: 'example_signal',
+			wave: '.n............'
+        }
+  ]
+}
