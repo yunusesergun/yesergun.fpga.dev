@@ -163,7 +163,7 @@ I have listed the types of signals that can be defined with "wave" below:
     // Signal properties
     {
         name: 'example_signal',
-        wave: '.n............'
+        wave: 'N.............'
     }
   ]
 }

@@ -163,7 +163,7 @@ Görüldüğü üzere sinyale hiçbir değer tanımlaması yapılmadığı için
     // Signal properties
     {
         name: 'example_signal',
-        wave: '.n............'
+        wave: 'N.............'
     }
   ]
 }
