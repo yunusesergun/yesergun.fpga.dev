@@ -1,8 +1,10 @@
 # Wavedrom
 
-There is an application called `Wavedrom`. This application allows us to draw waveforms, simple logic circuits, and bitfields. We use `JSON` to create these drawings. Using such an application is very helpful when writing documentation. You don't need to know JSON (I don't know much either). This tutorial will be sufficient for drawing waveforms.
+There is an application called `Wavedrom`. It is a very user-friendly program, especially for RTL designers, to draw protocols they use when writing documentation. It has a very simple syntax and is quite easy to learn.
 
-It is a very easy program to use, especially for RTL designers to draw the protocols they use when writing documentation. It has a very simple syntax, making it quite easy to learn. In this article, I will explain how to draw waveforms using this application. Since I have not used it to draw logic circuits and bitfields, I will not go into detail on those parts.
+In this article, I will explain how we can create waveforms using this application. With this application, we can also draw simple logic circuits and bitfields, but I will not go into detail on those parts as I have never used those features.
+
+We use `JSON` to create drawings. Using an application like this is very helpful for writing documentation. You don't need to know JSON (I don't know much about it either). This tutorial will be sufficient for drawing waveforms.
 
 ## How to Install
 
@@ -24,7 +26,7 @@ As an example, here is a wavedrom drawing showing `AXI4-Stream` protocol:
 
 The source code for the wavedrom visual I shared above is given below:
 
-```text
+```javascript
 {
   signal: [
     // clk signal properties
@@ -80,7 +82,7 @@ Items we can define within brackets are limited but sufficient. `name`, `wave`, 
 
 `name` defines signal name. After `name:` expression, we write signal name we want to define in quotation marks. Below is an example of JSON code:
 
-```text
+```javascript
 {
   signal: [
     // Signal properties
@@ -99,7 +101,7 @@ After this code, we can see an image like the one below in Wavedrom application:
 
 As clearly seen in the image above, there is a signal definition but no waveform. To define a waveform, we need to define `wave` item within same bracket. Below is an example code:
 
-```text
+```javascript
 {
   signal: [
     // Signal properties
@@ -123,7 +125,7 @@ I have listed the types of signals that can be defined with "wave" below:
 
 - By defining `0` and `1`, we can obtain signals that we can see in real life. What is meant by real life is that setup and hold times of signals are more clearly visible, but it is not possible to adjust setup and hold times. Below is an example code and waveform:
 
-```text
+```javascript
 {
   signal: [
     // Signal properties
@@ -139,7 +141,7 @@ I have listed the types of signals that can be defined with "wave" below:
 
 - By defining `p` and `n`, we can produce a periodic signal starting with a positive-negative edge. Below is an example code and waveform:
 
-```text
+```javascript
 {
   signal: [
     // Signal properties
@@ -155,7 +157,7 @@ I have listed the types of signals that can be defined with "wave" below:
 
 - By defining `P` and `N`, we can produce a clock signal starting with a positive-negative edge. Expression `P` indicates that we sample signals with a rising-edge, and expression `N` indicates that we sample signals with a falling-edge. Below is an example code and waveform:
 
-```text
+```javascript
 {
   signal: [
     // Signal properties
@@ -171,7 +173,7 @@ I have listed the types of signals that can be defined with "wave" below:
 
 - `data` can be defined by using numbers from 2 to 9. Additionally, we can define a new key named `data:` and write desired text in data part with square brackets. Below is an example code and waveform:
 
-```text
+```javascript
 {
   signal: [
     // Signal properties
@@ -188,7 +190,7 @@ I have listed the types of signals that can be defined with "wave" below:
 
 - We can use `|` expression to indicate signals that remain the same for a long time. This way, we optimize waveform. Below is an example code and waveform:
 
-```text
+```javascript
 {
   signal: [
     // Signal-1 properties
@@ -211,7 +213,7 @@ I have listed the types of signals that can be defined with "wave" below:
 
 By using `period`, size of the relevant signal can be enlarged according to defined value. In this case, quotation marks are not needed. All natural numbers except zero can be used. Below is an example code and waveform:
 
-```text
+```javascript
 {
   signal: [
     // Signal-1 properties
@@ -239,7 +241,7 @@ In the above example, the period of `example_signal-1` signal has been increased
 
 With `phase`, it is possible to give phase. To achieve a phase shift equal to 1 period value (360 degrees), you need to give a value of 1. In other words, one period fits between the values of 0 and 1. As with `period` key, quotation marks are not used here. Below is an example code and waveform:
 
-```text
+```javascript
 {
   signal: [
     // Signal-1 properties
@@ -268,7 +270,7 @@ With `node`, it is possible to make representations with arrows for signals on a
 
 To use `node`, we need to define `edge` in addition to `signal`. In this area, we first define letter that will appear at the end of arrow within quotation marks. Then, we write expression that will appear between arrows by leaving a space. Below is an example code and waveform:
 
-```text
+```javascript
 {
   signal: [
     // Signal-1 properties
@@ -294,7 +296,7 @@ To use `node`, we need to define `edge` in addition to `signal`. In this area, w
 
 In addition to these; if we want to create a gap between two signals (2 rows), it is enough to put empty brackets. Below is an example code and waveform:
 
-```text
+```javascript
 {
   signal: [
     // Signal-1 properties
@@ -317,7 +319,7 @@ In addition to these; if we want to create a gap between two signals (2 rows), i
 
 Finally, we can play with scaling in a way that affects all signals. To do this, we write an area called `config`, similar to `signal` and `edge`, and define `hscale` in it. Unlike `signal`, we do not need to use square brackets when making `config` definition. Below is an example code and waveform:
 
-```text
+```javascript
 {
   signal: [
     // Signal-1 properties
@@ -348,7 +350,7 @@ Finally, we can play with scaling in a way that affects all signals. To do this,
 
 Below is the code and waveform with `hscale: 4`:
 
-```text
+```javascript
 {
   signal: [
     // Signal-1 properties
@@ -385,7 +387,7 @@ I have explained a lot, but there is also the wavedrom guide they published. It 
 
 The program is excellent for documentation work and building architecture at module level. In addition to this, it can also draw simple `logic circuits`. However, I have not yet experienced this feature. I think it can be used in many places. Below, I have added the example code and logic circuit image they shared:
 
-```text
+```javascript
 { assign:[
   ["out",
     ["|",
@@ -400,7 +402,7 @@ The program is excellent for documentation work and building architecture at mod
 
 There is also a `bitfield` drawing feature. I have not experienced this feature either, but it looks very good visually and is really easy to use. Thanks to bitfield feature, we can define content of packet such as ethernet packet. Below, I have added the example code and bitfield image they shared:
 
-```text
+```javascript
 {
     reg: [
         {

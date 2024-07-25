@@ -1,8 +1,10 @@
 # Wavedrom
 
-`Wavedrom` diye bir uygulama var. Bu uygulama sayesinde waveform, basit mantık devresi ve bitfield çizebiliyoruz. Çizimi yapması için `JSON` kullanıyoruz. Bu tarz bir uygulamayı kullanmak doküman yazma konusunda çok yardımcı oluyor. JSON'ı bilmenize gerek yok (ben de bilmiyorum çok). Bu tutorial waveform çizmek için işinizi görecektir.
+`Wavedrom` diye bir uygulama var. Özellikle RTL tasarımcılarının doküman yazarken, kullandıkları protokolleri çizmesi adına kullanması çok kolay bir program. Çok basit bir sentaksı var, öğrenmesi gayet kolay.
 
-Özellikle RTL tasarımcılarının doküman yazarken kullandıkları protokolleri çizmesi adına kullanması çok kolay bir program. Çok basit bir sentaksı var, öğrenmesi gayet kolay. Bu yazıda bu uygulamayı kullanarak nasıl waveform çizme işlemini yapabileceğimizi aktaracağım. Mantık devresi ve bitfield çizmeyi hiç kullanmadığım için o kısımlara ayrıntılı değinmeyeceğim.
+Bu yazıda bu uygulamayı kullanarak nasıl waveform çizme işlemini yapabileceğimizi aktaracağım. Bu uygulama sayesinde ayrıca basit mantık devresi ve bitfield çizebiliyoruz fakat bu özellikleri hiç kullanmadığım için o kısımlara ayrıntılı değinmeyeceğim.
+
+Çizimi yapması için `JSON` kullanıyoruz. Bu tarz bir uygulamayı kullanmak doküman yazma konusunda çok yardımcı oluyor. JSON'ı bilmenize gerek yok (ben de bilmiyorum çok). Bu tutorial waveform çizmek için işinizi görecektir.
 
 ## Nasıl Kurulur
 
@@ -24,7 +26,7 @@ Kullanım olarak da .zip dosyasını açıp bilgisayarda herhangi bir yere kopya
 
 Yukarıda örnek olarak paylaştığım wavedrom görselinin kaynak kodu aşağıda verilmiştir:
 
-```text
+```javascript
 {
   signal: [
     // clk signal properties
@@ -80,7 +82,7 @@ Parantez içerisinde tanımlayacabileceğimiz itemler kısıtlıdır ama yeterli
 
 `name` ile sinyal ismi tanımlanır. `name:` ifadesi sonrası kesme işareti içerisine tanımlamak istediğimiz sinyal ismini yazarız. Aşağıda örnek bir .json kodu bulunuyor:
 
-```text
+```javascript
 {
   signal: [
     // Signal properties
@@ -99,7 +101,7 @@ Bu kod sonrası wavedrom uygulaması içerisinde aşağıdaki gibi bir görünt�
 
 Bir yukarıdaki görselde bariz şekilde göründüğü üzere sinyal tanımlaması var ama waveform yok. Waveform tanımlaması yapmak için aynı parantez içerisine `wave` item'i tanımlamamız gerekir. Aşağıda örnek bir kod bulunuyor:
 
-```text
+```javascript
 {
   signal: [
     // Signal properties
@@ -123,7 +125,7 @@ Görüldüğü üzere sinyale hiçbir değer tanımlaması yapılmadığı için
 
 - `0` ve `1` tanımlamaları yaparak gerçek hayatta görebileceğimiz sinyaller elde edebiliriz. Gerçek hayattan kasıt şudur ki sinyallerin setup ve hold zamanları daha net gözükür fakat setup ve hold zamanlarını ayarlamak mümkün değildir. Aşağıda örnek bir kod ve waveformu bulunmaktadır:
 
-```text
+```javascript
 {
   signal: [
     // Signal properties
@@ -139,7 +141,7 @@ Görüldüğü üzere sinyale hiçbir değer tanımlaması yapılmadığı için
 
 - `p` ve `n` tanımlamaları yaparak positive-negative edge ile başlayan periyodik sinyal üretilebilir. Aşağıda örnek bir kod ve waveformu bulunmaktadır:
 
-```text
+```javascript
 {
   signal: [
     // Signal properties
@@ -155,7 +157,7 @@ Görüldüğü üzere sinyale hiçbir değer tanımlaması yapılmadığı için
 
 - `P` ve `N` tanımalamaları yaparak positive-negative edge ile başlayan clock sinyali üretilebilir. `P` ifadesiyle sinyalleri rising-edge ile örneklediğimizi, `N` ifadesiyle de sinyalleri falling-edge ile örneklediğimizi belirtmiş oluruz. Aşağıda örnek bir kod ve waveformu bulunmaktadır:
 
-```text
+```javascript
 {
   signal: [
     // Signal properties
@@ -171,7 +173,7 @@ Görüldüğü üzere sinyale hiçbir değer tanımlaması yapılmadığı için
 
 - 2'den 9'a kadar sayılar kullanılarak `data` tanımlaması yapılabilir. Ayrıca, `data:` isminde yeni bir key tanımlayarak köşeli parantez ile data içerisine istediğimiz yazıyı yazabiliriz. Aşağıda örnek bir kod ve waveformu bulunmaktadır:
 
-```text
+```javascript
 {
   signal: [
     // Signal properties
@@ -188,7 +190,7 @@ Görüldüğü üzere sinyale hiçbir değer tanımlaması yapılmadığı için
 
 - `|` ifadesiyle uzun süre aynı kalan sinyalleri belirtebiliyoruz. Böylece waveformu daha optimize etmiş oluyoruz. Aşağıda örnek bir kod ve waveformu bulunmaktadır:
 
-```text
+```javascript
 {
   signal: [
     // Signal-1 properties
@@ -211,7 +213,7 @@ Görüldüğü üzere sinyale hiçbir değer tanımlaması yapılmadığı için
 
 `period` kullanılarak, ilgili sinyalin boyutu tanımlanan değere göre büyütülebilir. Bu sefer kesme işaretine gerek duyulmaz. Sıfır hariç tüm doğal sayılar kullanılabilir. Aşağıda örnek bir kod ve waveformu bulunmaktadır:
 
-```text
+```javascript
 {
   signal: [
     // Signal-1 properties
@@ -239,7 +241,7 @@ Yukarıdaki `example_signal-1` sinyalinin periyodu default haline kıyasla 2 kat
 
 `phase` ile faz vermek mümkün. 1 periyot değeri kadar faz değişimi için (360 derece) 1 değeri vermek gerekir. Yani 1 periyot, 0 ve 1 değerleri arasına sığdırılmıştır. `periyod` key'inde olduğu gibi burada da kesme işareti kulllanılmaz. Aşağıda örnek bir kod ve waveformu bulunmaktadır:
 
-```text
+```javascript
 {
   signal: [
     // Signal-1 properties
@@ -268,7 +270,7 @@ Yukarıdaki `example_signal-1` sinyalinin periyodu default haline kıyasla 2 kat
 
 `node` kullanmak için `signal` haricinde bir de `edge` tanımlamamız gerekir. Bu alan içerisinde kesme işareti içerisinde ilk önce ok işaretlerinin ucunda gözükecek harf tanımlamasını yaparız. Sonrasında boşluk bırakarak oklar arasında gözükecek ifadeyi yazarız. Aşağıda örnek bir kod ve waveformu bulunmaktadır:
 
-```text
+```javascript
 {
   signal: [
     // Signal-1 properties
@@ -294,7 +296,7 @@ Yukarıdaki `example_signal-1` sinyalinin periyodu default haline kıyasla 2 kat
 
 Bunlara ek olarak; eğer iki sinyal arasında (2 satır) boşluk oluşmasını istiyorsak içi boş parantezler koymamız yeterli. Aşağıda örnek bir kod ve waveformu bulunmaktadır:
 
-```text
+```javascript
 {
   signal: [
     // Signal-1 properties
@@ -317,7 +319,7 @@ Bunlara ek olarak; eğer iki sinyal arasında (2 satır) boşluk oluşmasını i
 
 Son olarak tüm sinyalleri etkileyecek şekilde scaling ile oynayabiliyoruz. Bunun için `signal` ve `edge` gibi `config` diye bir alan açıyoruz ve burada `hscale` tanımlaması yapıyoruz. `signal` içerisinde olduğundan farklı olarak `config` tanımlaması yaparken köşeli parantez kullanmamıza gerek kalmaz. Aşağıda örnek bir kod ve waveformu bulunmaktadır:
 
-```text
+```javascript
 {
   signal: [
     // Signal-1 properties
@@ -348,7 +350,7 @@ Son olarak tüm sinyalleri etkileyecek şekilde scaling ile oynayabiliyoruz. Bun
 
 Aşağıda `hscale: 4` yapılmış kod ve waveform bulunuyor:
 
-```text
+```javascript
 {
   signal: [
     // Signal-1 properties
@@ -385,7 +387,7 @@ Bu kadar anlattım evet ama kendi yayınladıkları wavedrom guide da var. Daha 
 
 Program, dokümantasyon işlerinde ve modül seviyesinde mimari kurabilmek için çok iyi. Bunun yanında basit düzeyde `mantık devresi` çizimi de yapabiliyor. Fakat, ben bu özelliği henüz deneyimlemedim. Kullanılabileceği birçok yer olur diye düşünüyorum. Aşağıya kendi paylaştıkları örnek kodu ve mantık devre görüntüsünü ekledim:
 
-```text
+```javascript
 { assign:[
   ["out",
     ["|",
@@ -400,7 +402,7 @@ Program, dokümantasyon işlerinde ve modül seviyesinde mimari kurabilmek için
 
 Bir de `bitfield` çizme özelliği var. Bu özelliği de henüz deneyimlemedim ama görüntü olarak çok iyi duruyor ve kullanımı gerçekten çok basit. Bitfield özelliği sayesinde paket içeriği tanımlamaları yapabiliyoruz (mesela ethernet paketi). Aşağıya kendi paylaştıkları örnek kodu ve bitfield görüntüsünü ekledim:
 
-```text
+```javascript
 {
     reg: [
         {
