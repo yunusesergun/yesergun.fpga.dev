@@ -2,7 +2,7 @@
 
 Doğrulama, debug, test... FPGA tasarımında sadece ve sadece RTL kod yazıp çalışmasını beklemek çok zor. Yaptığımız projeler gereği tek seferde bir kodu çalıştırmamız imkansız değil fakat corner-case diyebileceğimiz koşullarda kodun çalışmasını sağlamak ayrı bir zorluk.
 
-Bunu başarabilmek için kart üzerinde gerçek zamanlı testler öncesi yapacağımız adımlar çok önemli: Kodu doğrulamak ve recursive olarak kodu düzeltmek. Buna da aslında RTL doğrulama diyebiliriz.
+Bunu başarabilmek için kart üzerinde gerçek zamanlı testler öncesi yapacağımız adımlar çok önemli: Kodu doğrulamak ve iterative olarak kodu düzeltmek. Buna da aslında RTL doğrulama diyebiliriz.
 
 Doğrulama konusunda UVM gibi çokça kullanılan bir yöntem var ama bu yazıda Python temelli `cocotb`'den bahsedeceğim. Evet, verilog, system-verilog veya VHDL ile yazılan bir doğrulamadan bahsetmiyorum. Tamamiyle Python kullanarak RTL tasarımınızı özgürce doğrulayabiliyorsunuz. Ayrıca kullanımı çok kolay.
 
@@ -21,7 +21,7 @@ sıraladım:
   gibi). RTL tabanlı bir doğrulama aracında kolayca yapamayacağınız işlemleri
   (rastgele sayı üretme, array yapıları, ethernet paketleri... vs.) Python'da çok kolay bir şekilde
   yapabilirsiniz.
-- Jenkins entegrasyonu sağlaması adına built-in desteğine sahip yani git tabanlı
+- Komut satırından çalıştırılabiliyor yani git tabanlı
   uygulamalarda kolayca continuous integration (CI) sistemine cocotb'yi entegre
   edebilirsiniz.
 - cocotb kullanırken ekstra RTL tabanlı wrapper dosya oluşturmanıza gerek
@@ -56,10 +56,10 @@ Cocotb'yi Windows10'da çalıştırdığım için kurulum rehberini Windows içi
 [Bu linkten](https://docs.docker.com/desktop/install/windows-install/) Docker Desktop indirilir. Sonrasında bilgisayara kurulur. Ben ayarları önerilende kullandım ve kurulumu bu şekilde yaptım. Sonrasında aşağıdaki komutu cmd ile çalıştırdım:
 
 ```bash
-docker run -it -v C:\Users\yunus\Desktop\cocotb_deneme\:/home/example ubuntu:22.04
+docker run -it -v <WORKING DIRECTORY>:/home/example ubuntu:22.04
 ```
 
-Yukarıdaki komut ile ubuntu 22.04 container'ını kullandım yani sanal olarak ubuntu 22.04'ü Windows10 işletim sistemli bilgisayarımda kullanabilir hale geldim. Ayrıca cocotb'yi çalışacağım bir Windows dizinini ubuntu container içerisinde bir dizine bağladım. Bu şekilde, Windows üzerinden yapacağım değişiklikler docker container içerisinde de yapılır.
+Yukarıdaki komut ile ubuntu 22.04 container'ını kullandım yani sanal olarak ubuntu 22.04'ü Windows10 işletim sistemli bilgisayarımda kullanabilir hale geldim. Ayrıca cocotb'yi çalışacağım bir Windows dizinini ubuntu container içerisinde bir dizine bağladım. Bu şekilde, Windows üzerinden yapacağım değişiklikler docker container içerisinde de görünür.
 
 Artık ubuntu içerisinde çalışabiliyoruz. Aşağıdakine benzer bir komut satırını görebiliriz:
 
@@ -68,11 +68,11 @@ Artık ubuntu içerisinde çalışabiliyoruz. Aşağıdakine benzer bir komut sa
 Eğer cmd'yi kapadıktan sonra tekrar aynı docker container'ına bağlanmak istiyorsak aşağıdaki komutları sırasıyla başka bir cmd'de kullanabiliriz:
 
 ```bash
-docker start "id"
-docker attach "id"
+docker start <id>
+docker attach <id>
 ```
 
-`"id"` kısmına `Docker Desktop` uygulamasından bakılabilir. Docker Desktop uygulaması açılır, `Containers` kısmına girilir ve aşağıda mavi ok ile işaretlenen kısımdan ilgili container id kopyalanır.
+`<id>` kısmına `Docker Desktop` uygulamasından bakılabilir. Docker Desktop uygulaması açılır, `Containers` kısmına girilir ve aşağıda mavi ok ile işaretlenen kısımdan ilgili container id kopyalanır.
 
 ![capture4](./assets/capture4.png)
 
@@ -109,9 +109,9 @@ Kaynak dosyaları ve Python kodunun ne işe yaradığı anlaşılıyor fakat Mak
 
 İlk deneme için oluşturduğum projeyi ve dosyaları kısaca anlatayım.
 
-- counter_deneme.v: Reset sonrası input clock'a göre output counter register sürekli artar.
-- test_counter.py: cocotb test kodudur. Reset sonrası 20 clock cycle bekler ve counter değerinin 20 olup olmadığını kontrol eder.
-- Makefile: Gerekli bilgilerin tutulduğu makefile dosyası
+- `counter_deneme.v`: Reset sonrası input clock'a göre output counter register sürekli artar.
+- `test_counter.py`: cocotb test kodudur. Reset sonrası 20 clock cycle bekler ve counter değerinin 20 olup olmadığını kontrol eder.
+- `Makefile`: Gerekli bilgilerin tutulduğu makefile dosyası
 
 Önce make dosyasını paylaşıp neyin ne işe yaradığından bahsedeyim:
 

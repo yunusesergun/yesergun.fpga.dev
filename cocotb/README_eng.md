@@ -2,7 +2,7 @@
 
 Verification, debugging, testing... In FPGA design, simply writing RTL code and expecting it to work is very difficult. It's not impossible to run a code in one go, but ensuring that the code works in corner-case scenarios is an additional challenge.
 
-The steps we take before performing real-time tests on an FPGA board are crucial for achieving this: Verifying code and recursively correcting it. This is what we refer to as RTL verification.
+The steps we take before performing real-time tests on an FPGA board are crucial for achieving this: Verifying code and iteratively correcting it. This is what we refer to as RTL verification.
 
 A popular method in verification is UVM, but in this article, I will talk about `cocotb`, a Python-based framework. Yes, I'm not talking about verification using Verilog, SystemVerilog, or VHDL. With `cocotb`, you can freely verify your RTL design entirely using Python. Moreover, it's very easy to use.
 
@@ -17,7 +17,7 @@ There are many reasons to use `cocotb`, but here are the most important ones:
 - Python is an easy-to-learn and easy-to-use language.
 - `cocotb` doesn’t require advanced Python knowledge.
 - Python provides access to a vast library (such as numpy, pandas...). You can easily perform tasks in Python (like generating random numbers, array structures, Ethernet packets, etc.) that would be more challenging in RTL-based verification tools.
-- `cocotb` has built-in support for Jenkins integration, making it easy to integrate into continuous integration (CI) systems in Git-based applications.
+- You can run `cocotb` from command prompt or terminal, making it easy to integrate into continuous integration (CI) systems in Git-based applications.
 - There’s no need to create additional RTL-based wrapper files when using `cocotb`.
 
 ## How Does COCOTB Work?
@@ -45,10 +45,10 @@ Since I am running cocotb on Windows 10, I will explain the installation guide f
 You can download Docker Desktop from [this link](https://docs.docker.com/desktop/install/windows-install/). After that, install it on your computer. I used the recommended settings for installation and proceeded. Then, I ran the following command in cmd:
 
 ```bash
-docker run -it -v C:\Users\yunus\Desktop\cocotb_deneme\:/home/example ubuntu:22.04
+docker run -it -v <WORKING DIRECTORY>:/home/example ubuntu:22.04
 ```
 
-With the above command, I used Ubuntu 22.04 container, meaning I was able to run Ubuntu 22.04 virtually on my Windows 10 system. Additionally, I linked a Windows directory where I will be running `cocotb` to a directory within the Ubuntu container. This way, any changes I make on Windows are also applied within the Docker container.
+With the above command, I used Ubuntu 22.04 container, meaning I was able to run Ubuntu 22.04 virtually on my Windows 10 system. Additionally, I linked a Windows directory where I will be running `cocotb` to a directory within the Ubuntu container. This way, any changes I make on Windows can be seen within the Docker container.
 
 We can now work within Ubuntu. You should see a command line similar to this:
 
@@ -57,11 +57,11 @@ We can now work within Ubuntu. You should see a command line similar to this:
 If you want to reconnect to the same Docker container after closing the cmd, you can use the following commands in another cmd session:
 
 ```bash
-docker start "id"
-docker attach "id"
+docker start <id>
+docker attach <id>
 ```
 
-The `"id"` can be found in `Docker Desktop` application. Open Docker Desktop application, go to `Containers` section, and copy the relevant container id from the area marked with a blue arrow below.
+The `<id>` can be found in `Docker Desktop` application. Open Docker Desktop application, go to `Containers` section, and copy the relevant container id from the area marked with a blue arrow below.
 
 ![capture4](./assets/capture4.png)
 
