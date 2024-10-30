@@ -4,7 +4,7 @@ Verification, debugging, testing... In FPGA design, simply writing RTL code and 
 
 The steps we take before performing real-time tests on an FPGA board are crucial for achieving this: Verifying code and iteratively correcting it. This is what we refer to as RTL verification.
 
-A popular method in verification is UVM, but in this article, I will talk about `cocotb`, a Python-based framework. Yes, I'm not talking about verification using Verilog, SystemVerilog, or VHDL. With `cocotb`, you can freely verify your RTL design entirely using Python. Moreover, it's very easy to use.
+Although languages like SystemVerilog and VHDL are commonly used in verification (especially within the UVM methodology), in this article, I will discuss Python-based `cocotb`.
 
 In the rest of this article, I provided general information about `cocotb`, followed by details of how I installed it on my Windows machine. Finally, I showed a few examples of usage.
 

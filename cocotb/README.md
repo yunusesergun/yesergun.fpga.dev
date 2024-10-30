@@ -4,7 +4,7 @@ Doğrulama, debug, test... FPGA tasarımında sadece ve sadece RTL kod yazıp ç
 
 Bunu başarabilmek için kart üzerinde gerçek zamanlı testler öncesi yapacağımız adımlar çok önemli: Kodu doğrulamak ve iterative olarak kodu düzeltmek. Buna da aslında RTL doğrulama diyebiliriz.
 
-Doğrulama konusunda UVM gibi çokça kullanılan bir yöntem var ama bu yazıda Python temelli `cocotb`'den bahsedeceğim. Evet, verilog, system-verilog veya VHDL ile yazılan bir doğrulamadan bahsetmiyorum. Tamamiyle Python kullanarak RTL tasarımınızı özgürce doğrulayabiliyorsunuz. Ayrıca kullanımı çok kolay.
+Doğrulamada system Verilog, VHDL gibi diller çokça kullanılsa da (özellikle UVM metodolojisi kapsamında) bu yazıda Python temelli `cocotb`'den bahsedeceğim.
 
 Yazının devamında `cocotb` konusunda genel bilgilerden bahsettim. Sonrasında Windows bilgisayarıma nasıl kurduğumdan bahsettim. En son da örnek birkaç kullanım gösterdim.
 
