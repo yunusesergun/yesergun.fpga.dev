@@ -1,0 +1,31 @@
+CAPI=2:
+name: f:yunus:hwicap:0-r0
+description: HWICAP IP Example
+
+filesets:
+  rtl_verilog:
+    files:
+      - rtl/design_1_wrapper.v
+    file_type: verilogSource
+
+  blockdesign:
+    files:
+      - rtl/design_1.tcl
+    file_type: tclSource
+
+  constraints:
+    files:
+      - xdc/pins.xdc
+    file_type: xdc
+
+targets:
+  default:
+    filesets : [rtl_verilog, constraints, blockdesign]
+  project:
+    default_tool: vivado
+    filesets : [rtl_verilog, constraints, blockdesign]
+    toplevel : design_1_wrapper
+    tools:
+      vivado:
+        part: xc7a35tcpg236-1
+        source_mgmt_mode: All
