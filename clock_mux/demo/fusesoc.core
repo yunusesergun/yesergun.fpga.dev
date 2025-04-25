@@ -1,0 +1,43 @@
+CAPI=2:
+name: f:yunus:clock_mux:0-r0
+description: Clock MUX Example
+
+filesets:
+  rtl_verilog:
+    files:
+      - rtl/design_2_wrapper.v
+      - rtl/libraries/user_bufgmux_ctrl.v
+      - rtl/libraries/user_bufgmux.v
+      - rtl/libraries/user_bufgmux1.v
+      - rtl/libraries/user_glitch_bufgctrl.v
+      - rtl/libraries/user_glitch_mux.v
+      - rtl/libraries/user_glitchless_bufgctrl.v
+      - rtl/libraries/user_glitchless_mux.v
+    file_type: verilogSource
+
+  blockdesign:
+    files:
+      - rtl/design_2.tcl
+    file_type: tclSource
+
+  constraints:
+    files:
+      - xdc/pins.xdc
+    file_type: xdc
+
+  hooks:
+    files:
+      - hooks/create_hooks.tcl
+    file_type: tclSource
+
+targets:
+  default:
+    filesets : [rtl_verilog, constraints, blockdesign, hooks]
+  project:
+    default_tool: vivado
+    filesets : [rtl_verilog, constraints, blockdesign, hooks]
+    toplevel : design_2_wrapper
+    tools:
+      vivado:
+        part: xc7a35tcpg236-1
+        source_mgmt_mode: All
