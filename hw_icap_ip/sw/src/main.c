@@ -3,17 +3,12 @@
 #include "xil_printf.h"
 #include "xuartlite.h"
 #include <stdio.h>
+#include "sleep.h"
 
 
 #define HWICAP_DEVICE_ID    XPAR_HWICAP_0_DEVICE_ID
 #define UARTLITE_DEVICE_ID  XPAR_UARTLITE_0_DEVICE_ID
 
-
-// Basit bir gecikme fonksiyonu (yaklaşık 1 saniye)
-static void delay_1s(void) {
-    volatile int i;
-    for (i = 0; i < 12500000; i++); // Yaklaşık 1 sn gecikme
-}
 
 int main(void) {
     int Status;
@@ -55,7 +50,7 @@ int main(void) {
 
     while (1) {
         // Her saniye bir kez kontrol edeceğiz
-        delay_1s();
+        sleep(1);
 
         // UART'tan 1 byte okumaya çalış
         XUartLite_Recv(&UartLite, &ReceivedChar, 1);
