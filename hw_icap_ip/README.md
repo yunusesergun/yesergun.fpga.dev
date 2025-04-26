@@ -1,8 +1,8 @@
 # Xilinx HWICAP IP
 
-Xilinx's HWICAP IP is a powerful IP that allows FPGA to be reconfigured during operation, using ICAP interface. ICAP (Internal Configuration Access Port) is an interface that provides access to the internal configuration memory of Xilinx FPGAs. Thanks to this interface, FPGAs can be partially or fully reprogrammed during runtime.
+Xilinx's HWICAP IP is a powerful IP that allows FPGA to be reconfigured during operation, using ICAP interface. ICAP (Internal Configuration Access Port) is an interface that provides access to the internal configuration memory of Xilinx FPGAs. Thanks to this interface, FPGAs can be partially or fully reprogrammed during runtime. The list of commands that can be sent through the ICAP interface on Xilinx 7-Series FPGAs can be found in the UG470 7-Series FPGAs Configuration User Guide. Additionally, the usage details and register map for AXI HWICAP IP are provided in the PG156 AXI HWICAP Product Guide. These documents together enable direct interaction with the FPGA configuration logic via the AXI4-Lite to ICAP bridge.
 
-With HWICAP IP, it is possible to perform a hardware-based real-time reset without cutting power to FPGA. This feature enables fast and seamless recovery and reset in applications that require reliability, without powering down system. Thus, hardware remains continuously accessible and operational. In this article, we explain how to reset FPGA at any desired moment using HWICAP IP, and how to configure it accordingly.
+With HWICAP IP, it is possible to perform a hardware-based run-time reset without cutting power to FPGA. This feature enables fast and seamless recovery and reset in applications that require reliability, without powering down system. Thus, hardware remains continuously accessible and operational. In this article, we explain how to reset FPGA at any desired moment using HWICAP IP, and how to configure it accordingly.
 
 - Vivado 2022.1 and Vitis 2022.1 are used throughout the article.
 - The Basys3 demo board is used.
