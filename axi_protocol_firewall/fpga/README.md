@@ -1,39 +1,36 @@
-# Vivado Projesinin Oluşturulması
+# Vivado Project Creation
 
-Projeyi en baştan  oluşturmak için `fusesoc` kütüphanesi kullandım. FPGA projesinin fusesoc ile oluşturulabilmesi için aşağıdaki tool ve kütüphanelere ihtiyaç var:
+To build project from scratch, `fusesoc` library is utilized. Required tools for FPGA project creation via `fusesoc`:
 
-- Vivado 2024.1
-- pip
-- make
-- fusesoc
+- Vivado 2024.1  
+- pip  
+- make  
+- fusesoc  
 
-## Proje Oluşturma Aşamaları
+## Project Setup Steps
 
-İlk olarak indirilen repo'nun `fpga` dosyası içerisinde terminal (Linux) veya cmd (Windows) açılır. Sonrasında Vivado source edilir (örnek Windows için verilmiştir). Vivado'nun source edilebilmesi için kurulum dizini içerisinde `settings64.bat` aranmalıdır.
+Open terminal (Linux) or cmd (Windows) inside cloned repo’s `fpga` folder. Then, source Vivado installation (Windows example):
 
 ```bash
 D:\Xilinx\Vivado\2024.1\settings64.bat
 ```
 
-Sonrasında aşağıdaki iki komut kullanılarak projeyi oluşturmak için kullanılacak make dosyaları oluşturulur.
+Next, run two commands below to generate makefiles used for project setup:
 
 ```bash
 fusesoc library add firewall .
 fusesoc run --target=project --setup firewall
 ```
 
-Oluşturulan build dosyasının içindeki dosyalara `cd` komutu ile gidilir ve `Makefile` dosyasının olduğu dizinde durulur. Yani `build\f_yunus_firewall_0\project-vivado` içerisine girilmelidir. Aşağıdaki komut ile Vivado projesi GUI üzerinden açılır.
+Use `cd` to enter build output folder where `Makefile` resides and run `make` command below:
 
 ```bash
+cd build\f_yunus_firewall_0\project-vivado
 make build-gui
 ```
 
-Bu noktadan sonra FPGA projesi sentezlenebilir. FPGA sentezi sonrası eğer Vitis projesi oluşturulacak ise `.xsa` dosyası export edilmelidir. Bunun için aşağıdaki figürde belirtilen seçeneğe tıklanır.
+At this point, FPGA project can be synthesized. After synthesis, if creating a Vitis project, export `.xsa` file by clicking option shown in figure below:
 
 ![1](./assets/1.png)
 
-Sonrasında `Output` ayarları içerisinde `Include Bitstream` seçeneği seçilir ve export dizini olarak `sw` dosyasının içi seçilmelidir. Ayrıca isim olarak `design_1_wrapper.xsa` seçilmelidir.
-
-## Notlar
-
-Windows'ta yaparken projenin oluştuğu dizinin uzunluğu önemli. Belli bir karakter sayısı aşıldığında proje açılsa da doğru bir şekilde sentezlenmeyebilir. Böyle bir durumda oluşturulan proje daha kısa bir dizine kopyalanabilir. Veya `build` ve içindeki dosya isimlerinin ismi kısaltılabilir.
+Then, in Output settings, enable `Include Bitstream`, set export folder to `sw`, and name file `design_1_wrapper.xsa`.

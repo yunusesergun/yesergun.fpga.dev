@@ -1,17 +1,23 @@
-# Vitis Projesinin Oluşturulması
+# Vitis Project Creation
 
-Vitis Classic yerine yeni Vitis kullanılmıştır. Bu yüzden projenin oluşması için `.tcl` yerine `.py` kullanılmıştır.
+New Vitis is used instead of Vitis Classic, so project generation relies on `.py` rather than `.tcl`.
 
-Vivado projesi oluşturulup `.xsa` dosyası `design_1_wrapper.xsa` olarak export edildikten sonra bu `README.md` dosyasının olduğu dizine kopyalanır. Sonrasımda bu dizin içerisinde terminal veya cmd açılır. Vitis'in kurulu olduğu dizindeki `settings64.bat` (Windows için) veya `settings64.sh` (Linux için) dosyası bulunmalıdır.
+After Vivado project creation and export of `.xsa` file named `design_1_wrapper.xsa`, copy that file into folder containing `README.md`. Open terminal (Linux) or cmd (Windows) in that folder. Locate `settings64.bat` (Windows) or `settings64.sh`  (Linux) inside Vitis installation directory and source it.
 
 ```bash
 D:\Xilinx\Vitis\2022.1\settings64.bat
 ```
 
-Sonrasında aşağıdaki komut kullanılarak projenin ve `.elf` dosyasının oluşturulması sağlanır.
+Then, run following command to generate project and `.elf` file:
 
 ```bash
 vitis -s script.py
 ```
 
-Aynı komut satırında `vitis` komutu yazılarak Vitis uygulamasının açılması sağlanabilir. Sonrasında `Workspace` olarak `vitis_workspace` dizini gösterilmelidir. `elf` dosyası `vitis_workspace\app_ublaze\build` içerisinde bulunabilir.
+In same terminal session, launch Vitis by running:
+
+```bash
+vitis
+```
+
+In Vitis GUI, set `workspace` to `vitis_workspace`. Generated `.elf` can be found under `vitis_workspace/app_ublaze/build`.
