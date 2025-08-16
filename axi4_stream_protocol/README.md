@@ -2,8 +2,8 @@
 
 Mühendislik mesleğinin hemen hemen her alanında veriyi bir yerden başka bir yere
 taşıma işlemi gerçekleştirilir. Bu taşıma işlemini `Bus` ismini verdiğimiz
-yapılarla yapmak mümkün. Bu yazıda, Xilinx FPGA'lerin vazgeçilmez bus yapılarından biri olan `AXI4-Stream`
-protokolüne değinilecektir.
+yapılarla yapmak mümkün. Bu yazıda, Xilinx FPGA'lerin vazgeçilmez bus
+yapılarından biri olan `AXI4-Stream` protokolüne değinilecektir.
 
 ## AXI4-Stream Protokolü Nedir?
 
@@ -22,7 +22,8 @@ bulunmaktadır:
   yapısının bulunmaması yönüyle AXI4-MM bus yapısının basitleştirilmiş hali gibi
   tanımlanabilir. Xilinx IP'lerinin bir çoğunda, AXI4-MM yerine bu bus yapısı
   tercih edilmektedir.
-- **`AXI4-Stream (AXI4-S):`** Yazının odak noktası olan bu bus içerisinde kanallar bulunmaz. Diğer çeşitlerde çift yönlü veri iletimi bulunmasına rağmen
+- **`AXI4-Stream (AXI4-S):`** Yazının odak noktası olan bu bus içerisinde
+  kanallar bulunmaz. Diğer çeşitlerde çift yönlü veri iletimi bulunmasına rağmen
   bu bus içerisinde tek tönlü bir iletim söz konusudur.
 
 Her bus yapısında olduğu gibi bu bus yapısında da belli bir protokol akışı
@@ -87,9 +88,10 @@ sürülmesi gerektiğinden bahsedilecektir.
 
 Bir önceki kısımda bulunan tablodan anlaşılacağı üzere master tarafı TVALID
 sinyalini slave tarafına, slave tarafı ise TREADY sinyalini master tarafına
-sürer. Bu iki sinyali sürerken uyulması gereken belli bir protokol vardır. Buna `Handshake` ismi verilmiştir. Kelimeden de anlaşılacağı üzere bu işlem
-sayesinde master ve slave tarafı el sıkışır ve bu el sıkışma sonucunda master
-tarafından slave tarafına veri akışı gerçekleşmiş olur.
+sürer. Bu iki sinyali sürerken uyulması gereken belli bir protokol vardır. Buna
+`Handshake` ismi verilmiştir. Kelimeden de anlaşılacağı üzere bu işlem sayesinde
+master ve slave tarafı el sıkışır ve bu el sıkışma sonucunda master tarafından
+slave tarafına veri akışı gerçekleşmiş olur.
 
 Handshake protokolündeki temel kural şudur ki TVALID ve TREADY sinyalleri aynı
 clock cycle içerisinde `high` (**1** konumunda) olduğunda slave tarafı bunu
@@ -158,8 +160,8 @@ Yukarıdaki figürde TREADY sinyali TVALID sürüldükten sonra 1 sürülmüşt�
 
 Yukarıdaki figürde TREADY sinyali TVALID ile birlikte sürülmüştür.
 
-- **KURAL 4: Slave tarafından 1 sürülen TREADY sinyaline, handshake gerçekleşmeden 0
-  sürülebilir.**
+- **KURAL 4: Slave tarafından 1 sürülen TREADY sinyaline, handshake
+  gerçekleşmeden 0 sürülebilir.**
 
 ![9](assets/axi4_stream/9.png)
 
@@ -298,7 +300,8 @@ TSTRB, boyut olarak TKEEP ile aynı olmasına rağmen kullanış amacı olarak; 
 TSTRB bitine karşılık gelen TDATA byte'ının data byte'ı veya position byte'ı
 (konum) olduğu bilgisini taşır. AXI4-Stream protokolünü yaratan Arm şirketinin
 kendi sitesinde bile bu sinyalle alakalı neredeyse hiçbir bilgi veya örnek
-bulunmamaktadır. Açıkçası, gördüğüm ve kullandığım hiçbir Xilinx IP'sinde bu sinyal kullanılmıyor.
+bulunmamaktadır. Açıkçası, gördüğüm ve kullandığım hiçbir Xilinx IP'sinde bu
+sinyal kullanılmıyor.
 
 Bu sinyal TKEEP ile birlikte kullanılır. İkisinin 1/0 durumlarına göre verinin
 niteliği belirlenir. Aşağıda, TKEEP ve TSTRB sinyallerinin tüm kombinasyonları
@@ -351,7 +354,8 @@ aynıdır.
 ## TUSER Kullanımı
 
 TUSER sinyali, yan bir bilgi paylaşılmak isteniyorsa kullanılabilir. TDATA ile
-karıştırılmamalıdır, asıl paketin verilerini taşımaz. Kullanıma göre içeriği değişebilir.
+karıştırılmamalıdır, asıl paketin verilerini taşımaz. Kullanıma göre içeriği
+değişebilir.
 
 Kullanımı ve kullanım kuralları itibariyle TID ve TDEST ile aynıdır fakat içerik
 bakımından Arm bile anlaşılır bir açıklamaya yer vermemiştir.
@@ -363,14 +367,12 @@ TVALID sürülürken eğer başka bir sinyalin durumu değişecekse değişim TV
 ## Referanslar
 
 - Dan Gisselquist (takma ismiyle ZipCPU), blog yazılarının bir tanesinde
-AXI4-Stream konusunda yaptığı bir
-[öneri/iyileştirmeyi](https://zipcpu.com/blog/2022/02/23/axis-abort.html )
-paylaşmıştır.
-
+  AXI4-Stream konusunda yaptığı bir
+  [öneri/iyileştirmeyi](https://zipcpu.com/blog/2022/02/23/axis-abort.html )
+  paylaşmıştır.
 - Yine ZipCPU'nun AXI4-Stream'i debug etmek amacıyla yazdığı ayrıntılı bir
   [yazının](https://zipcpu.com/dsp/2020/04/20/axil2axis.html), protokolü
   öğrendikten sonra okunması tavsiye edilir.
-
 - ZipCPU'nun Xilinx'in kendi oluşturduğu örnek bir kodu eleştirdiği [Twitter
   paylaşımına](https://twitter.com/zipcpu/status/1232410090537455618?lang=en)
   bakılabilir. Bu eleştiride TVALID ile birlikte sürülmeyen TLAST ile ilgili bir
@@ -378,7 +380,6 @@ paylaşmıştır.
   birlikte diğer sinyallerin sürülmesidir. Alakasız bir yerde herhangi bir
   sinyalin sürülmesi takip edebilme ve güvenilirlik açısından sıkıntılara yol
   açabilir. Bu noktada ZipCPU haklı bir eleştiri yapmıştır.
-
 - Arm şirketinin AXI4-Stream ile ilgili hazırladığı bir site ve PDF var. PDF
   hali [sitenin](https://developer.arm.com/documentation/ihi0051/a?lang=en)
   sonundaki **Download** tuşu ile indirilebilir.
