@@ -34,7 +34,7 @@ Since the main focus of this article is the AXI4-Stream protocol, the following
 sections are prepared accordingly. An example figure of AXI4-Stream bus is
 below:
 
-![Master-slave](assets/axi4_stream/master-slave.png)
+![Master-slave](assets/axi4_stream/1.drawio.png)
 
 ## AXI4-Stream Port Definitions
 
