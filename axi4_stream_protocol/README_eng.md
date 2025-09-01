@@ -105,20 +105,20 @@ signals:
   short; TVALID must not wait for TREADY to be 1. This situation is related to
   `Rule 3`.
 
-![1](assets/axi4_stream/1.png)
+![1](assets/axi4_stream/english1.png)
 
 In the figure above, TVALID signal and TDATA are driven without waiting for
 TREADY, and when TREADY becomes 1, the handshake is realized. Since no other
 data is ready, TVALID signal is set to 0. In the striped parts of TDATA signal,
 data is not yet ready.
 
-![2](assets/axi4_stream/2.png)
+![2](assets/axi4_stream/english2.png)
 
 In the figure above, although there is data ready to be sent in TDATA, TVALID is
 not driven to 1 and instead waits for TREADY. This situation is wrong and
 against the protocol.
 
-![3](assets/axi4_stream/3.png)
+![3](assets/axi4_stream/english3.png)
 
 Above is a figure of successive handshakes. After one handshake, because the
 next data is immediately ready, two more handshakes occur. In this way,
@@ -127,14 +127,14 @@ efficiency may be increased.
 - **RULE 2:** After the master drives TVALID and TDATA signals, they must not be
   changed until handshake occurs.
 
-![4](assets/axi4_stream/4.png)
+![4](assets/axi4_stream/english4.png)
 
 In the figure above, although TVALID = 1 and TDATA is driven with ready data,
 TDATA is changed before handshake. This is wrong and against the protocol,
 because after being driven with TVALID, TDATA must not change until handshake
 occurs.
 
-![5](assets/axi4_stream/5.png)
+![5](assets/axi4_stream/english5.png)
 
 In the figure above, although TVALID = 1 and TDATA is driven with ready data,
 TVALID is again driven to 0 before handshake occurs. This is wrong and against
@@ -144,29 +144,29 @@ handshake occurs.
 - **RULE 3:** The slave side may freely drive TREADY signal. It may wait for
   TVALID = 1, or it may drive 1 without waiting for TVALID.
 
-![6](assets/axi4_stream/6.png)
+![6](assets/axi4_stream/english6.png)
 
 In the figure above, TREADY is driven to 1 before TVALID.
 
-![7](assets/axi4_stream/7.png)
+![7](assets/axi4_stream/english7.png)
 
 In the figure above, TREADY is driven to 1 after TVALID.
 
-![8](assets/axi4_stream/8.png)
+![8](assets/axi4_stream/english8.png)
 
 In the figure above, TREADY is driven to 1 together with TVALID.
 
 - **RULE 4:** A TREADY signal driven to 1 by the slave may be driven back to 0
   before handshake occurs.
 
-![9](assets/axi4_stream/9.png)
+![9](assets/axi4_stream/english9.png)
 
 In the figure above, before handshake occurs, TREADY is driven to 1 and then
 back to 0. This situation is not a problem.
 
 - **RULE 5:** After handshake, TREADY signal driven by the slave may remain 1.
 
-![10](assets/axi4_stream/10.png)
+![10](assets/axi4_stream/english10.png)
 
 In the figure above, after handshake, TREADY is left as 1. This situation is not
 a problem.
@@ -174,7 +174,7 @@ a problem.
 - **RULE 6:** If after handshake no new handshake or data transfer will happen,
   TDATA may remain in its last state; it is not mandatory to reset it.
 
-![11](assets/axi4_stream/11.png)
+![11](assets/axi4_stream/english11.png)
 
 In the figure above, after handshake, TDATA preserved its state, i.e., no reset
 operation was performed.
@@ -191,7 +191,7 @@ rules regarding the use of TLAST:
 - **RULE 1:** In packets larger than TDATA width, TLAST must be 1 in the
   handshake of the last data sent.
 
-![12](assets/axi4_stream/12.png)
+![12](assets/axi4_stream/english12.png)
 
 In the figure above, transmission of a packet containing 3 TDATA data from
 master to slave is shown. In the last TDATA cycle of the packet, TLAST is driven
@@ -200,7 +200,7 @@ to 1.
 - **RULE 2:** Even if there is only one data word in the packet, TLAST can be
   used. In this case, TLAST must be driven to 1 in each handshake.
 
-![13](assets/axi4_stream/13.png)
+![13](assets/axi4_stream/english13.png)
 
 In the figure above, the data packet is large enough for one handshake.
 Therefore, in each packet transmission, TLAST is driven as 1.
@@ -208,7 +208,7 @@ Therefore, in each packet transmission, TLAST is driven as 1.
 - **RULE 3:** It is recommended to drive TLAST in the same clock cycle with the
   last TDATA and TVALID. In this way, following the signal becomes easier.
 
-![14](assets/axi4_stream/14.png)
+![14](assets/axi4_stream/english14.png)
 
 In the figure above, after 2 handshakes, in one clock cycle TVALID could not be
 driven to 1. While driving the last data and TVALID, TLAST is also driven to 1.
@@ -218,7 +218,7 @@ driven to 1. While driving the last data and TVALID, TLAST is also driven to 1.
   than TDATA width and TLAST remains 1 until the first handshake of the next
   packet, it must be ensured that TLAST is driven to 0 during the handshake.
 
-![15](assets/axi4_stream/15.png)
+![15](assets/axi4_stream/english15.png)
 
 In the figure above, after packet transmission ended, TLAST remained 1 until the
 first data of the next packet. In the first data of the second packet, it was
@@ -236,7 +236,7 @@ Below are various rules regarding TKEEP signal:
 - **RULE 1:** Any bit of TKEEP signal makes the corresponding byte of TDATA
   signal valid or invalid.
 
-![16](assets/axi4_stream/16.png)
+![16](assets/axi4_stream/english16.png)
 
 In the figure above, since TKEEP signal of the first data sent is **0x3**, the
 slave must accept all of this data. Since TKEEP signal of the last data is
@@ -247,7 +247,7 @@ In the last TDATA, only **0xdd** is valid, **0xcc** must not be used.
   rule forbidding TKEEP from containing 0 unless TLAST = 1. Also, any bit of
   TKEEP signal may be 0.
 
-![17](assets/axi4_stream/17.png)
+![17](assets/axi4_stream/english17.png)
 
 In the figure above, in both data of the transmitted packet, certain parts of
 TDATA are invalid. The **0xbb** part of the first data and **0xcc** part of the
@@ -260,7 +260,7 @@ is no restriction.
   increased. As a result, typically only the last data of the packet may have 0
   in TKEEP.
 
-![18](assets/axi4_stream/18.png)
+![18](assets/axi4_stream/english18.png)
 
 In the figure above is the merged version of the data in the previous figure.
 Since **0xbb** and **0xcc** were not used, data was merged and TDATA sent as
@@ -269,14 +269,14 @@ Since **0xbb** and **0xcc** were not used, data was merged and TDATA sent as
 - **RULE 4:** It is recommended to drive TKEEP in the same clock cycle with
   TDATA and TVALID. In this way, following the signal becomes easier.
 
-![19](assets/axi4_stream/19.png)
+![19](assets/axi4_stream/english19.png)
 
 In the figure above, TKEEP is driven together with TVALID and TDATA.
 
 - **RULE 5:** After handshake of the last data of a packet, TKEEP may remain
   unchanged until the first data of the next packet is sent, or it may be reset.
 
-![20](assets/axi4_stream/20.png)
+![20](assets/axi4_stream/english20.png)
 
 In the figure above, after transmission of the last data of the packet, TKEEP
 preserved its state.
@@ -317,7 +317,7 @@ goes. Below are various rules regarding this signal:
   a handshake does not occur in intermediate parts, not changing TID signal is a
   recommended practice in order to be able to track the signal.**
 
-![21](assets/axi4_stream/21.png)
+![21](assets/axi4_stream/english21.png)
 
 In the figure above, in the first data of the packet TID signal is driven, and
 its value is not changed until TLAST is driven to 1.
@@ -325,7 +325,7 @@ its value is not changed until TLAST is driven to 1.
 - **RULE 2: After the handshake of the last data of a packet, TID may remain the
   same until the first data of the next packet is sent, or it may be reset.**
 
-![22](assets/axi4_stream/22.png)
+![22](assets/axi4_stream/english22.png)
 
 In the figure above, after the last data of a packet is sent, TID preserved its
 state; it was not reset.
