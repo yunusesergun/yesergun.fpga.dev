@@ -105,6 +105,25 @@ Status = XHwIcap_DeviceWrite(&HwIcap, WriteData, 5);
 - `WriteData[4] = 0x0000000F`: This is IPROG command. Writing this value to CMD
   register instructs FPGA to reboot via ICAP.
 
+
+The registers under `Configuration Registers` section in the `7 Series FPGAs
+Configuration User Guide` can be read through ICAP interface. For this purpose,
+the subject of this article — AXI HWICAP — can be used. Therefore, BOOTSTS (Boot
+History Status Register) which is defined in `7 Series FPGAs Configuration User
+Guide` is read when the board boots via the code below:
+
+```c
+XHwIcap_GetConfigReg(&HwIcap, XHI_BOOTSTS, &read_data);
+xil_printf("Boot History Register: 0x%x\n", read_data);
+```
+
+With this register, we can determine whether a reset has been triggered on the
+board via ICAP interface. There are four bits in this register that we will
+examine: **VALID_0, IPROG_0, VALID_1, and IPROG_1**. The figure from the user
+guide can be seen below:
+
+![bootsts](./assets/bootsts.png)
+
 ## Generating MCS File
 
 At this point, we have all necessary files to generate `.mcs` file that will be
@@ -137,11 +156,30 @@ Basys3 board via the command below. In this stage, the board power should be on:
 program_flash -f output.mcs  -flash_type s25fl032p-spi-x1_x2_x4
 ```
 
-After these, power should be off and on. Then, for testing purposes, the value
-`0x03` should be sent via any serial interface.
+After these, power should be off and on.
 
-![figure4](./assets/hwicap4.png)
+## Experiment
 
-As seen above, the counter is printed to the screen every second, starting from
-zero. When the value 0x03 is sent via UART, FPGA performs a hard reset and
-restarts from the beginning.
+When the board is first powered on and we read the specified register, we obtain
+the value `0x0001`, because IPROG has not yet been triggered and a valid
+configuration already exists in the board. An example figure is shown below:
+
+![hercules1](./assets/hercules1.png)
+
+Afterwards, when the value `0x3` is sent via UART (as required by the project
+setup), AXI HWICAP IP uses ICAP interface to reset the board. At this point, the
+status register values shift from `_0` to `_1`. This occurs on every reset
+triggered by IPROG. When BOOTSTS register is read afterwards, the value `0x0105`
+should be observed, since IPROG has been triggered and a valid configuration has
+been established. An example figure is shown below:
+
+![hercules2](./assets/hercules2.png)
+
+When the value `0x3` is sent again via UART, another shift occurs in BOOTSTS
+register. In this case, the value `0x0505` should be read. From this point on,
+as long as the board is not powered down, the same value will be read for each
+IPROG reset operation. Once the board is powered off and then back on, it
+returns to the initial state, and the value `0x1` is read again. An example
+figure is shown below:
+
+![hercules3](./assets/hercules3.png)
