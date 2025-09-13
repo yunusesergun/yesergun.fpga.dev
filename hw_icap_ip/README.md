@@ -1,13 +1,13 @@
 # Xilinx HWICAP IP
 
-Xilinx's HWICAP IP is a powerful IP that allows FPGA to be reconfigured during
-operation, using ICAP interface. ICAP (Internal Configuration Access Port) is an
-interface that provides access to the internal configuration memory of Xilinx
+Xilinx's `HWICAP IP` is a powerful IP that allows FPGA to be reconfigured during
+operation, using `ICAP interface`. ICAP (Internal Configuration Access Port) is
+an interface that provides access to the internal configuration memory of Xilinx
 FPGAs. Thanks to this interface, FPGAs can be partially or fully reprogrammed
 during runtime. The list of commands that can be sent through the ICAP interface
-on Xilinx 7-Series FPGAs can be found in the UG470 7-Series FPGAs Configuration
-User Guide. Additionally, the usage details and register map for AXI HWICAP IP
-are provided in the PG156 AXI HWICAP Product Guide. These documents together
+on Xilinx 7-Series FPGAs can be found in the `UG470 7-Series FPGAs Configuration
+User Guide`. Additionally, the usage details and register map for AXI HWICAP IP
+are provided in the `PG156 AXI HWICAP Product Guide`. These documents together
 enable direct interaction with the FPGA configuration logic via the AXI4-Lite to
 ICAP bridge.
 
