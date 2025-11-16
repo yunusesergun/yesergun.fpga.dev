@@ -1,0 +1,238 @@
+= Chirp Signals
+Yunus Esergün <yunusesergun2316@gmail.com>
+:stem: latexmath
+:toc:
+:toclevels: 4
+:imagesdir: assets
+:sectnums:
+
+<<<
+
+== Introduction
+
+A chirp signal is a waveform whose frequency changes continuously over time. Generally, the instantaneous frequency of a sine or cosine wave increases or decreases according to a specific function. A chirp signal with increasing frequency is called an up-chirp, and one with decreasing frequency is called a down-chirp. Below is an example of an up-chirp signal.
+
+.Chirp Signal Example
+image::1.png[width=80%,align=center]
+
+Chirp signals are used for measurement, detection, and communication purposes in many fields due to their wideband frequency content and structure suitable for time-frequency analysis. The main goal is to obtain the response characteristics of a system or medium, or distance information. It is possible to see these signals in use in areas such as radar, sonar, and wireless communication.
+
+There are many types of chirp signals in the literature. A few of them are summarized below:
+
+* *Linear Frequency Modulation (LFM)*: The frequency decreases or increases linearly over time. It is also found in the literature as linear chirp. It is relatively easier to produce compared to other chirp types.
+* *Hyperbolic Frequency Modulation (HFM)*: The frequency decreases or increases hyperbolically over time.
+* *Quadratic Chirp*: The frequency change is a second-order (parabolic) function.
+
+In this document, only the LFM and HFM types of chirp signals will be examined.
+
+<<<
+
+== Mathematics of Chirp Signals
+
+In this part, the mathematical foundations of LFM and HFM chirp signals will be covered. In this context, it will be explained how to find the phase and frequency values for the specified chirp signal types.
+
+[[sin-cos]]
+=== Sin/Cos Fundamentals
+
+To understand chirp signals, we first need to understand sine and cosine functions. A sine or cosine signal can be expressed as follows:
+
+[.text-center]
+latexmath:[x(t) = A \sin(\phi(t))]
+
+The analysis of the signal above is as follows:
+
+* *A*: Represents the amplitude value.
+* *latexmath:[\phi(t)]*: Is the phase function. Its unit is radians.
+* *latexmath:[\omega(t) = \frac{d\phi(t)}{dt}]*: Derivative of the phase function. Represents the instantaneous angular frequency value or function. Its unit is latexmath:[\frac{radians}{s}].
+
+=== LFM Chirp Signals
+
+As indicated earlier, in LFM chirp signals, the frequency changes linearly. In this context, the frequency formula is given below:
+
+[.text-center]
+latexmath:[f(t) = f_{0} + k t]
+
+Some important terms for the formula above are listed below:
+
+* *latexmath:[f(t)]*: Specifies the frequency function. Its unit is Hertz (Hz).
+* *latexmath:[f_{0}]*: Represents the initial frequency.
+* *latexmath:[f_{1}]*: Represents the end frequency.
+* *latexmath:[T]*: Represents the duration of the chirp signal in seconds.
+* *latexmath:[k]*: Represents the frequency sweep rate. Its unit is latexmath:[\frac{Hz}{s}]. This value is found by the formula *latexmath:[\frac{f_{1} - f_{0}}{T}]*. Briefly, the value latexmath:[k] represents the slope. If this value is positive, an up-chirp is generated; if negative, a down-chirp is generated.
+
+To understand and generate an LFM chirp signal, the following steps should be examined.
+
+The frequency value is obtained by taking the derivative of the phase function specified in the sine signal mentioned earlier under the <<sin-cos>> section:
+
+[.text-center]
+latexmath:[f(t) = \frac{1}{2\pi} \frac{d\phi(t)}{dt}]
+
+In this case, the phase function can be expressed as follows. The found phase value must be written into the sine function. This ensures the generation of the chirp signal.
+
+[.text-center]
+latexmath:[\phi(t) = 2\pi \int_{0}^{t} f(\tau)\,d\tau]
+
+If we substitute the expression latexmath:[f(\tau) = f_{0} + k\tau], we get the following result:
+
+[.text-center]
+latexmath:[\phi(t) = 2\pi \int_{0}^{t} (f_{0} + k\tau)\,d\tau = 2\pi(f_{0}t + \tfrac{1}{2}k t^{2})]
+
+Using the result above, the final chirp signal formula is obtained:
+
+[.text-center]
+latexmath:[x(t) = A \sin(2\pi f_{0}t + \pi k t^{2})]
+
+With minor adjustments, it can alternatively be expressed as:
+
+[.text-center]
+latexmath:[x(t) = A \sin\!\left( 2\pi \left( f_{0}t + \frac{k t^{2}}{2} \right) \right)]
+
+=== HFM Chirp Signals
+
+As mentioned earlier, in HFM chirp signals, the frequency changes hyperbolically. In this context, the frequency formula is given below:
+
+[.text-center]
+latexmath:[f(t) = \frac{f_{0} f_{1} T}{f_{1} T - (f_{1} - f_{0})t}]
+
+In HFM, the signal is defined as cosine instead of sine in the literature:
+
+[.text-center]
+latexmath:[x(t) = A \cos(\phi(t))]
+
+In this case, using the frequency-phase formula, the phase function can be expressed as follows.
+
+[.text-center]
+latexmath:[\phi(t) = 2\pi\int_{0}^{t} f(\tau)\, d\tau]
+
+The result of this integral for HFM is given below:
+
+[.text-center]
+latexmath:[\phi(t) = 2\pi\frac{f_{0} f_{1} T}{(f_{1} - f_{0})} \ln\!\left(\frac{f_{1} T}{f_{1} T - (f_{1} - f_{0})t}\right)]
+
+Therefore, the final HFM signal is as follows:
+
+[.text-center]
+latexmath:[x(t) = A \cos\!\left(2\pi \frac{f_{0} f_{1} T}{(f_{1} - f_{0})} \ln\!\left(\frac{f_{1} T}{f_{1} T - (f_{1} - f_{0})t}\right)\right)]
+
+<<<
+
+== Chirp Signal Analysis
+
+This section presents graphs of LFM and HFM signals in different domains and with different properties. The graphs were generated using Python. matplotlib library was used for plotting and spectrogram parts, and numpy library was used for FFT operations and array operations.
+
+=== LFM Chirp Signals
+
+In the analysis of LFM signals, the formulas mentioned earlier were used. Additionally, the values specified in the list below were used as parameters. Up-chirp was chosen as the chirp type:
+
+* *latexmath:[f_{0}]*: Start frequency is 20 kHz.
+* *latexmath:[f_{1}]*: End frequency is 30 kHz.
+* *latexmath:[T]*: LFM chirp signal duration is 20 ms.
+* *latexmath:[Sample Rate]*: Sampling rate is 200 kHz.
+
+The sweep rate, which we define as the signal's slope, was calculated as 500 kHz per second in this case.
+
+==== Time-domain
+
+Below is the Time-Amplitude graph. Due to the long duration (T) of the chirp signal, the increase in frequency is not clearly visible. Therefore, FFT of the signal is taken in the next section.
+
+.Time-Amplitude Graph
+image::2.png[width=80%,align=center]
+
+==== FFT (Magnitude Scale)
+
+Below is the graph of the chirp signal in terms of magnitude scale.
+
+.FFT (Magnitude) Graph
+image::3.png[width=80%,align=center]
+
+As can be clearly seen from the graph above; energy is spread over a wide band between approximately 20-30 kHz. This confirms that the LFM structure has a frequency that increases linearly over time.
+
+==== FFT (dB Scale)
+
+In the previous magnitude FFT graph, it is difficult to clearly observe the sidelobes because we are looking directly at the magnitude. At this point, if we switch to the dB scale, small values are magnified by taking the logarithm. This way, sidelobes, noise floor, and weak harmonics can be seen easily. Below is the graph of the chirp signal in terms of dB scale.
+
+.FFT (dB) Graph
+image::4.png[width=80%,align=center]
+
+In the graph above, it is obvious that the band is between 20-30 kHz, but the values outside the band fall off slowly. Therefore, its use in this form in sonar and radar fields can lead to ambiguity problems in some cases for the signal. Ideally, the dB value outside the band should rapidly drop below -60 dB.
+
+==== Spectrogram
+
+Another visualization method for analysis is the spectrogram. It can be defined as a frequency vs. time graph. This allows the distribution of frequency over time to be seen clearly. Below is the spectrogram graph of the chirp signal:
+
+.Spectrogram (Frequency-Time) Graph
+image::5.png[width=80%,align=center]
+
+In the spectrogram above, it is clearly seen that the frequency increases linearly in the 20–30 kHz range over time. This indicates that the LFM chirp was designed correctly. Additionally, it can be said that there is spectral leakage outside the 20-30 kHz band. That is, levels outside the band are also higher than necessary or expected.
+
+=== HFM Chirp Signals
+
+In the analysis of HFM signals, the formulas mentioned earlier were used. Additionally, the values specified in the list below were used as parameters. Up-chirp was chosen as the chirp type:
+
+* *latexmath:[f_{0}]*: Start frequency is 20 kHz.
+* *latexmath:[f_{1}]*: End frequency is 50 kHz.
+* *latexmath:[T]*: HFM chirp signal duration is 20 ms.
+* *latexmath:[Sample Rate]*: Sampling rate is 200 kHz.
+
+==== Time-domain
+
+Below is the Time-Amplitude graph. Due to the long duration (T) of the chirp signal, the increase in frequency is not clearly visible. Therefore, FFT of the signal is taken in the next section.
+
+.Time-Amplitude Graph
+image::14.png[width=80%,align=center]
+
+==== FFT (Magnitude Scale)
+
+Below is the graph of the chirp signal in terms of magnitude scale.
+
+.FFT (Magnitude) Graph
+image::15.png[width=80%,align=center]
+
+As can be clearly seen from the graph above; energy is spread over a wide band between approximately 20-50 kHz. Unlike the LFM chirp signal, the amplitude within the band hyperbolically decreases. The reason for this is that the frequency in HFM changes hyperbolically. Since the chirp signal stays at lower frequencies for a longer time, the amplitude is higher at lower frequencies. The curve is not linear but hyperbolic, meaning it takes a concave shape.
+
+==== FFT (dB Scale)
+
+In the previous magnitude FFT graph, it is not very possible to see the sidelobes clearly because we are looking directly at the magnitude. At this point, if we switch to the dB scale, small values are magnified by taking the logarithm. This way, sidelobes, noise floor, and weak harmonics can be seen easily. Below is the graph of the chirp signal in terms of dB scale.
+
+.FFT (dB) Graph
+image::16.png[width=80%,align=center]
+
+In the graph above, it is obvious that the band is between 20-50 kHz, but the values outside the band fall off slowly. For this reason, its use in this form in sonar and radar fields can lead to ambiguity problems in some cases for the signal. Ideally, the dB value outside the band should rapidly drop below -60 dB.
+
+The decay seen in this graph is not the hyperbolic behavior itself, but a linear slope arising from the log-scale. The reason for this is the use of logarithms in the calculation. Even though the value is an exponential expression, the exponential part becomes a product because the logarithm is taken. The mathematical expression related to this situation is given below. In this context, the following formula is used when creating the dB scale graph:
+
+[.text-center]
+latexmath:[X_{dB}(f) = 20 \log_{10} \left| X(f) \right|]
+
+Because latexmath:[|X(f)| \propto \frac{1}{f^2}], then:
+
+[.text-center]
+latexmath:[X_{dB}(f) = 20 \log_{10} \left( \frac{1}{f^2} \right) = -40 \log_{10}(f)]
+
+This means the decay part in the graph becomes linear.
+
+==== Spectrogram
+
+Another visualization method for analysis is the spectrogram. It can be defined as a frequency vs. time graph. This allows the distribution of frequency over time to be seen clearly. Below is the spectrogram graph of the chirp signal:
+
+.Spectrogram (Frequency-Time) Graph
+image::17.png[width=80%,align=center]
+
+In HFM, the instantaneous frequency creates a nonlinear sweep that shifts from slower increases to faster increases on the frequency axis, rather than linearly over time. Therefore, because the instantaneous frequency changes hyperbolically, the energy trace follows a concave curve, not a linear one. The reason for a brighter trace at low frequencies is that energy is more concentrated at low frequencies due to the hyperbolic nature of HFM. Also, similar to the spectrogram in LFM, it can be said that there is spectral leakage outside the band. That is, levels outside the band are also higher than necessary or expected.
+
+<<<
+
+== Conclusion
+
+In this study, the mathematical foundations, time-domain behaviors, FFT analyses, and spectrogram visualizations of LFM and HFM chirp signals were examined in detail. The obtained graphs show that both chirp types accurately reflect the theoretically expected frequency changes. It was clearly seen in both FFT and spectrogram results that the frequency follows a linear structure over time in LFM and a hyperbolic structure in HFM.
+
+However, there is a common problem noted in the FFT and spectrogram analyses: significant spectral leakage occurs when windowing is not applied. When the FFT of a chirp signal of a certain length is taken:
+
+* Energy leaking outside the band increases due to transitions at the beginning and end of the signal (edge effect).
+* Sidelobe levels are high.
+* The noise floor is perceived as higher than it is.
+* Frequency resolution and interpretability are adversely affected.
+
+The high out-of-band levels in the FFT/dB and spectrogram graphs plotted for both LFM and HFM are typical indicators of the lack of windowing. Especially in sonar, radar, and wideband measurement applications, this situation can lead to significant ambiguity problems.
+
+Therefore, the use of windowing is an integral part of frequency-domain analyses. In the next article, the mathematical structures and properties of Hann and Tukey windows will be examined in detail; then, these windows will be applied to LFM and HFM chirp signals to demonstrate graphically how spectral leakage is reduced. Thus, the impact of windowing on the analysis quality of chirp signals will be demonstrated both theoretically and practically.

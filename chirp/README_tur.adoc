@@ -1,0 +1,227 @@
+= Chirp Sinyalleri
+Yunus Esergün <yunusesergun2316@gmail.com>
+:stem: latexmath
+:toc:
+:toclevels: 2
+:imagesdir: assets
+
+== Giriş
+
+Chirp sinyali, frekansı zamanla sürekli olarak değişen bir dalga formudur. Genellikle, bir sinüs veya kosinüs dalgasının anlık frekansı, belirli bir fonksiyona göre artar veya azalır. Frekansı artan chirp sinyaline up-chirp, azalan chirp sinyaline ise down-chirp denir. Aşağıda up-chirp sinyaline bir örnek bulunmaktadır.
+
+.Chirp Sinyal Örneği
+image::1.png[width=100%,align=center]
+
+Chirp sinyalleri, geniş bantlı frekans içeriği ve zaman-frekans analizine uygun yapısı nedeniyle birçok alanda ölçüm, tespit ve iletişim amacıyla kullanılır. Temel amaç, bir sistemin veya ortamın tepki karakteristiğini veya mesafe bilgilerini elde etmektir. Bu sinyalleri kullanım açısından radar, sonar ve kablosuz iletişim gibi alanlarda görmek mümkün.
+
+Literatürde birçok chirp sinyal çeşidi bulunmaktadır. Bunlardan birkaç tanesi aşağıda özetlenmiştir:
+
+* *Linear Frequency Modulation (LFM)*: Frekans zamanla doğrusal olarak azalır veya artar. Linear chirp olarak da literatürde yer bulmaktadır. Üretilmesi, görece, diğer chirp çeşitlerine göre daha kolaydır.
+* *Hyperbolic Frequency Modulation (HFM)*: Frekans zamanla hiperbolik şekilde azalır veya artar.
+* *Quadratic Chirp*: Frekans değişimi ikinci dereceden (parabolik) fonksiyondur.
+
+Bu dokümanda chirp sinyal çeşitlerinden sadece LFM ve HFM incelenecektir.
+
+== Chirp Sinyallerinin Matematiği
+
+Bu kısımda, LFM ve HFM chirp sinyallerinin matematiksel temelleri ele alınacaktır. Bu çerçevede, belirtilen chirp sinyal çeşitlerinde faz ve frekans değerlerinin nasıl bulunacağı anlatılacaktır.
+
+[[sin-cos]]
+=== Sin/Cos Temelleri
+
+Chirp sinyallerini anlayabilmek için öncelikle sinüs ve kosinüs fonksiyonlarını anlamamız gerekir. Bir sinüs veya kosinüs sinyali aşağıdaki gibi ifade edilebilir:
+
+[.text-center]
+latexmath:[x(t) = A \sin(\phi(t))]
+
+Yukarıdaki sinyalin incelemesi aşağıdadır:
+
+* *A*: Genlik değerini temsil eder.
+* *latexmath:[\phi(t)]*: Phase (faz) fonksiyonudur. Birimi radyan şeklindedir.
+* *latexmath:[\omega(t) = \frac{d\phi(t)}{dt}]*: Instantaneous angular frequency (Anlık açısal frekans) değerini veya fonksiyonunu temsil eder. Birimi latexmath:[\frac{radyan}{s}] şeklindedir.
+
+=== LFM
+
+Daha önce de bahsedildiği üzere LFM chirp sinyallerinde frekans lineer olarak değişir. Bu kapsamda aşağıda frekans formülü bulunmaktadır:
+
+[.text-center]
+latexmath:[f(t) = f_{0} + k t]
+
+Yukarıdaki formülde yer alan ve önem arz eden bazı terimler aşağıda listelenmiştir:
+
+* *latexmath:[f(t)]*: Frekans fonksiyonunu belirtir. Birimi Hertz (Hz) şeklindedir.
+* *latexmath:[f_{0}]*: Başlangıç frekansını (initial frequency) temsil etmektedir.
+* *latexmath:[f_{1}]*: Bitiş frekansını (end frequency) temsil etmektedir.
+* *latexmath:[T]*: Chirp sinyalinin süresini saniye cinsinden temsil eder.
+* *latexmath:[k]*: Frequency sweep rate (Frekans değişim oranı) değerini temsil eder. Birimi latexmath:[\frac{Hz}{s}] şeklindedir. Bu değer *latexmath:[\frac{f_{1} - f_{0}}{T}]* formülü ile bulunmaktadır. Kısaca tanımlamak gerekirse latexmath:[k] değeri eğim değerini temsil etmektedir. Bu değerin pozitif olması halinde up-chirp, negatif olması halinde down-chirp oluşturulur.
+
+LFM chirp sinyalini anlamak ve üretebilmek için aşağıdaki adımlar incelenmelidir.
+
+Daha önce <<sin-cos>> başlığı altında belirtilen sinüs sinyali içerisinde belirtilen faz fonksiyonunun türevi alınarak frekans değeri elde edilir:
+
+[.text-center]
+latexmath:[f(t) = \frac{1}{2\pi} \frac{d\phi(t)}{dt}]
+
+Bu durumda fazın fonksiyonu aşağıdaki gibi ifade edilebilir. Bulunan faz değeri sinüs fonksiyonu içerisine yazılmalıdır. Bu sayede chirp sinyalinin üretimi sağlanır.
+
+[.text-center]
+latexmath:[\phi(t) = 2\pi \int_{0}^{t} f(\tau)\,d\tau]
+
+latexmath:[f(\tau) = f_{0} + k\tau] ifadesini yerine koyarsak aşağıdaki gibi bir sonuç elde edilir:
+
+[.text-center]
+latexmath:[\phi(t) = 2\pi \int_{0}^{t} (f_{0} + k\tau)\,d\tau = 2\pi(f_{0}t + \tfrac{1}{2}k t^{2})]
+
+Yukarıdaki sonuç kullanılarak nihai chirp sinyali formülü elde edilir:
+
+[.text-center]
+latexmath:[x(t) = A \sin(2\pi f_{0}t + \pi k t^{2})]
+
+Ufak düzeltmelerle alternatif olarak aşağıdaki gibi de ifade edilebilir:
+
+[.text-center]
+latexmath:[x(t) = A \sin\!\left( 2\pi \left( f_{0}t + \frac{k t^{2}}{2} \right) \right)]
+
+=== HFM
+
+Daha önce de bahsedildiği üzere HFM chirp sinyallerinde frekans hiperbolik olarak değişir. Bu kapsamda aşağıda frekans formülü bulunmaktadır:
+
+[.text-center]
+latexmath:[f(t) = \frac{f_{0} f_{1} T}{f_{1} T - (f_{1} - f_{0})t}]
+
+HFM'de sinyal, sinüs yerine kosinüs olarak tanımlanır:
+
+[.text-center]
+latexmath:[s(t) = A \cos(\phi(t))]
+
+Bu durumda, frekans-faz formülü de kullanılarak fazın fonksiyonu aşağıdaki gibi ifade edilebilir.
+
+[.text-center]
+latexmath:[\phi(t) = 2\pi\int_{0}^{t} f(\tau)\, d\tau]
+
+HFM için bu integralin sonucu aşağıda verilmiştir:
+
+[.text-center]
+latexmath:[\phi(t) = 2\pi\frac{f_{0} f_{1} T}{(f_{1} - f_{0})} \ln\!\left(\frac{f_{1} T}{f_{1} T - (f_{1} - f_{0})t}\right)]
+
+Dolayısıyla, HFM sinyali nihai olarak aşağıdaki gibidir:
+
+[.text-center]
+latexmath:[s(t) = A \cos\!\left(2\pi \frac{f_{0} f_{1} T}{(f_{1} - f_{0})} \ln\!\left(\frac{f_{1} T}{f_{1} T - (f_{1} - f_{0})t}\right)\right)]
+
+== Chirp Sinyalleri
+
+Bu başlık altında LFM ve HFM sinyallerinin değişik domainlerdeki ve özellikteki grafiklerine yer verilmiştir. Grafikler Python dili kullanılarak oluşturulmuştur. Çizdirme, spectrogram kısımları için matplotlib, FFT alma kısımları ve array operasyonları için numpy kütüphanesi kullanılmıştır.
+
+=== LFM
+
+LFM sinyallerinde inceleme yapılırken daha önce bahsedilmiş olan formüller kullanılmıştır. Ayrıca; parametre olarak aşağıdaki listede belirtilen değerler kullanılmıştır. Chirp olarak up-chirp tercih edilmiştir:
+
+* *latexmath:[f_{0}]*: 20 kHz
+* *latexmath:[f_{1}]*: 30 kHz
+* *latexmath:[T]*: 20 ms
+* *latexmath:[Sample Rate]*: 200 kHz
+
+Sinyalin eğimi diye tanımladığımız sweep rate bu durumda 500 kHz/s olarak hesaplanmıştır.
+
+==== Time-domain
+
+Aşağıda Zaman-Genlik grafiği bulunmaktadır. Chirp sinyalin süresinin (T) yüksek olması sebebiyle, frekansın arttığı net bir şekilde gözlenememektedir. Bu yüzden bir sonraki başlık içerisinde sinyalin FFT'si alınmıştır.
+
+.Zaman-Genlik Grafiği
+image::2.png[width=100%,align=center]
+
+==== FFT (Magnitude Scale)
+
+Aşağıda chirp sinyalin genlik açısından (magnitude scale) grafiği bulunmaktadır.
+
+.FFT (Genlik) Grafiği
+image::3.png[width=100%,align=center]
+
+Yukarıdaki grafikten net bir şekilde görüleceği üzere; enerji, yaklaşık 20-30 kHz arasında geniş bir bant boyunca yayılmıştır. Bu durum LFM yapısında frekansın zaman içinde doğrusal olarak arttığını doğrular.
+
+==== FFT (dB Scale)
+
+Bir önceki genlik FFT grafiğinde sidelobe'ları net bir şekilde görmek çok mümkün değil çünkü direkt olarak genliğe bakmaktayız. Bu noktada dB scale'e geçiş olması halinde küçük değerler logaritma alınarak büyür. Bu sayede; sidelobe'lar, gürültü tabanı ve zayıf harmonikler rahatça görülebilir. Aşağıda chirp sinyalin dB açısından (dB scale) grafiği bulunmaktadır.
+
+.FFT (dB) Grafiği
+image::4.png[width=100%,align=center]
+
+Yukarıdaki grafikte bandın 20-30 kHz arası olduğu bariz bir şekilde görülebilmektedir fakat bant dışında değerler yavaş bir şekilde düşmektedir. Dolayısıyla sonar ve radar alanlarında bu haliyle kullanılması sinyal açısından bazı durumlarda bilinmezlik (ambiguity) problemlerine yol açabilir. İdeal durumda bant dışında dB değeri hızla -60 dB'nin altına düşmelidir.
+
+==== Spectrogram
+
+Analiz için bir diğer görselleştirme yöntemi spectrogram'dır. Frekans vs. zaman grafiği şeklinde tanımlanabilir. Bu sayede frekansın zamana bağlı dağılımı net bir şekilde görülebilir. Aşağıda chirp sinyalinin spectrogram grafiği bulunmaktadır:
+
+.Spectrogram (Frekans-Zaman) Grafiği
+image::5.png[width=100%,align=center]
+
+Yukarıdaki spectrogramda frekansın 20–30 kHz arasında zamana bağlı olarak doğrusal şekilde arttığı net biçimde görülmektedir. Yani LFM chirp'ün doğru bir şekilde tasarlandığı söylenebilir. Ayrıca, 20-30 kHz bant dışında spectral leakage (spektral sızıntı) var denilebilir. Yani bant dışında da dB seviyeleri olması gerekenden veya beklenenden yüksek.
+
+=== HFM
+
+HFM sinyallerinde inceleme yapılırken daha önce bahsedilmiş olan formüller kullanılmıştır. Ayrıca; parametre olarak aşağıdaki listede belirtilen değerler kullanılmıştır. Chirp olarak up-chirp tercih edilmiştir:
+
+* *latexmath:[f_{0}]*: 20 kHz
+* *latexmath:[f_{1}]*: 50 kHz
+* *latexmath:[T]*: 20 ms
+* *latexmath:[Sample Rate]*: 200 kHz
+
+==== Time-domain
+
+Aşağıda Zaman-Genlik grafiği bulunmaktadır. Chirp sinyalin süresinin (T) yüksek olması sebebiyle, frekansın arttığı net bir şekilde gözlenememektedir. Bu yüzden bir sonraki başlık içerisinde sinyalin FFT'si alınmıştır.
+
+.Zaman-Genlik Grafiği
+image::14.png[width=100%,align=center]
+
+==== FFT (Magnitude Scale)
+
+Aşağıda chirp sinyalin genlik açısından (magnitude scale) grafiği bulunmaktadır.
+
+.FFT (Genlik) Grafiği
+image::15.png[width=100%,align=center]
+
+Yukarıdaki grafikten net bir şekilde görüleceği üzere; enerji, yaklaşık 20-50 kHz arasında geniş bir bant boyunca yayılmıştır. LFM chirp sinyalinden farklı olarak bandın içerisinde genlik giderek azalmaktadır. Bunun sebebi HFM'de frekansın hiperbolik olarak değişmesidir. Chirp sinyali düşük frekanslarda daha uzun kaldığı için düşük frekanslarda genlik daha yüksek olmaktadır. Eğri, doğrusal değil hiperboliktir yani konkav bir şekil almaktadır.
+
+==== FFT (dB Scale)
+
+Bir önceki genlik FFT grafiğinde sidelobe'ları net bir şekilde görmek çok mümkün değil çünkü direkt olarak genliğe bakmaktayız. Bu noktada dB scale'e geçiş olması halinde küçük değerler logaritma alınarak büyür. Bu sayede; sidelobe'lar, gürültü tabanı ve zayıf harmonikler rahatça görülebilir. Aşağıda chirp sinyalin dB açısından (dB scale) grafiği bulunmaktadır.
+
+.FFT (dB) Grafiği
+image::16.png[width=100%,align=center]
+
+Yukarıdaki grafikte bandın 20-50 kHz arası olduğu bariz bir şekilde görülebilmektedir fakat bant dışında değerler yavaş bir şekilde düşmektedir. Bu sebeple sonar ve radar alanlarında bu haliyle kullanılması sinyal açısından bazı durumlarda bilinmezlik (ambiguity) problemlerine yol açabilir. İdeal durumda bant dışında dB değeri hızla -60 dB'nin altına düşmelidir.
+
+Bu grafikte görülen düşüş (decay) hiperbolik davranışın kendisi değil, log-ölçek nedeniyle ortaya çıkan doğrusal bir eğimdir. Bunun sebebi hesaplama yaparken logaritma kullanılmasıdır. Değer her ne kadar üssel bir ifade olsa da logaritma alındığı için üssel kısım çarpım haline gelir. Aşağıda anlatılan bu durum ile ilgili matematiksel ifade verilmiştir. Bu kapsamda dB scale grafik oluştururken aşağıdaki formül kullanılır:
+
+latexmath:[X_{dB}(f) = 20 \log_{10} \left| X(f) \right|]
+
+Eğer latexmath:[|X(f)| \propto \frac{1}{f^2}] ise:
+
+latexmath:[X_{dB}(f) = 20 \log_{10} \left( \frac{1}{f^2} \right) = -40 \log_{10}(f)]
+
+Yani grafikteki decay kısım lineer hale gelir.
+
+==== Spectrogram
+
+Analiz için bir diğer görselleştirme yöntemi spectrogram'dır. Frekans vs. zaman grafiği şeklinde tanımlanabilir. Bu sayede frekansın zamana bağlı dağılımı net bir şekilde görülebilir. Aşağıda chirp sinyalinin spectrogram grafiği bulunmaktadır:
+
+.Spectrogram (Frekans-Zaman) Grafiği
+image::17.png[width=100%,align=center]
+
+HFM’de instantaneous frequency, zamanla doğrusal olarak değil, frekans ekseni üzerinde daha yavaş artışlardan daha hızlı artışlara doğru kayan nonlinear bir sweep oluşturur. Bu nedenle, instantaneous frequency hiperbolik değiştiği için enerji izi doğrusal değil, konkav bir eğri izlemektedir. Düşük frekanslarda daha parlak bir iz görülmesinin sebebi, HFM’nin hiperbolik yapısı nedeniyle enerjinin düşük frekanslarda daha yoğunlaşmasıdır. Ayrıca, LFM'deki spectrograma benzer şekilde bant dışında spectral leakage var denilebilir. Yani bant dışında da dB seviyeleri olması gerekenden veya beklenenden yüksek.
+
+== Conclusion
+
+Bu çalışmada LFM ve HFM chirp sinyallerinin matematiksel temelleri, time-domain davranışları, FFT analizleri ve spectrogram görselleştirmeleri ayrıntılı olarak incelenmiştir. Elde edilen grafikler, her iki chirp türünün de teorik olarak beklenen frekans değişimlerini doğru şekilde yansıttığını göstermektedir. LFM’de frekansın zamanla doğrusal, HFM’de ise hiperbolik bir yapı izlediği hem FFT hem de spectrogram sonuçlarında açıkça görülmüştür.
+
+Bununla birlikte, FFT ve spectrogram analizlerinde dikkat çeken ortak bir problem bulunur: windowing uygulanmaması durumunda belirgin spectral leakage oluşması. Belli uzunluğa sahip bir chirp sinyalinin FFT'si alındığında:
+
+* Sinyalin başlangıç ve bitişindeki geçişlerden dolayı bant dışına taşan enerji artmaktadır.
+* Sidelobe seviyeleri yüksektir.
+* Gürültü tabanı olduğundan yüksek algılanmaktadır.
+* Frekans çözünürlüğü ve yorumlanabilirlik olumsuz etkilenmektedir.
+
+Hem LFM hem de HFM için çizdirilen FFT/dB ve spectrogram grafiklerindeki bant dışı seviyenin yüksek oluşu windowing eksikliğinin tipik göstergesidir. Özellikle sonar, radar ve geniş bantlı ölçüm uygulamalarında bu durum önemli ambiguity problemlerine yol açabilir.
+
+Bu nedenle, windowing kullanımı frekans-domain analizlerinin ayrılmaz bir parçasıdır. Bir sonraki yazıda Hann ve Tukey pencerelerinin matematiksel yapıları ve özellikleri detaylı şekilde incelenecek; ardından bu pencereler LFM ve HFM chirp sinyallerine uygulanarak spectral leakage’ın nasıl azaltıldığı grafiklerle gösterilecektir. Böylece windowing’in chirp sinyallerinin analiz kalitesine olan etkisi hem teorik hem de uygulamalı olarak ortaya konacaktır.
