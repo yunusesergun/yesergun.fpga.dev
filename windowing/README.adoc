@@ -1,0 +1,270 @@
+= Windowing in Chirp Signals
+Yunus Esergün <yunusesergun2316@gmail.com>
+:stem: latexmath
+:toc:
+:toclevels: 4
+:imagesdir: assets
+:sectnums:
+
+<<<
+
+== Introduction
+
+Introduction to chirp signals was provided in article found at https://www.linkedin.com/feed/update/urn:li:activity:7395898120359833600[this link] previously. In this context:
+
+* Chirp signal types
+* Mathematics of LFM and HFM chirp signals
+* Analysis of LFM and HFM chirp signals using Python codes
+
+subjects were discussed. In scope of this article:
+
+* Window function types and mathematics
+* Application of window signals to chirp signals
+* Analysis of Chirp+window signals using Python language
+
+subjects will be discussed.
+
+Windowing is fundamental technique used to reduce spectral leakage effect caused by abrupt discontinuities at edge points of signal when preparing specific portion of time-domain signal for frequency-domain analyses like FFT. Signals used in this technique can be defined as window functions or signals.
+
+Especially in finite-duration signals, if FFT of signal is taken, sharp transitions lead to unwanted sidelobes and energy spreading in frequency domain. Windowing reduces these transitions by smoothing signal before analysis and ensures spectrum looks cleaner and more meaningful. While applying this technique, time-domain signal is basically multiplied with window function.
+
+Below are time-domain and frequency-domain (dB scale) graphics of Hamming window, which will not be discussed in article scope but serves as example.
+
+.Hamming Window Example
+image::1.png[width=90%,align=center]
+
+Reason for energy concentration at 0 Hz in signal above and other window function types is lack of rapid oscillations and average value being greater than zero.
+
+<<<
+
+== Mathematics of Window Functions
+
+Windowing plays even more critical role in signals with wideband and time-varying frequency structure like chirp signals; because chirp signal energy spreads over wide frequency range and boundary parts create more distinct leakage in this wideband structure. Therefore, window functions like Hann, Hamming, Tukey, Blackman or Kaiser carry vital importance regarding control of sidelobe levels and minimization of in-band ripple in FFT analyses of chirp signals.
+
+Under this heading, Rectangular, Hann and Tukey window functions, widely used in sonar and radar fields, are mentioned for example purposes. Also, analyses were performed using only these three window types in sample project.
+
+=== Rectangular Window
+
+Rectangular window is simplest and most basic of window functions. Amplitude of each sample is constant and no smoothing is applied in time-domain. In other words, signal is directly cut and given to FFT. Mathematical definition in time-domain:
+
+[.text-center]
+[latexmath]
+++++
+w[n] = 1, \quad 0 \le n \le N-1
+++++
+
+This window contains zero tapering so that:
+
+[.text-center]
+[latexmath]
+++++
+w[0] = w[N-1] = 1
+++++
+
+Thus, there is no transition smoothing at start and end points of signal. This creates sharp transitions (discontinuity) in time-domain and causes quite distinct spectral leakage during FFT. Rectangular window resembles sinc function with non-ideal, wide sidelobes in frequency-domain; therefore sidelobe suppression is quite weak.
+
+Time-domain and frequency-domain graphics of Rectangular window are given below:
+
+.Rectangular Window
+image::2.png[width=90%,align=center]
+
+=== Hann Window
+
+Hann window is one of window functions aiming to reduce spectral leakage effect occurring during FFT process by smoothing start and end parts of signal. Meaning, effect of signal's edge parts is reduced. This function is basically half of cosine signal. Mathematical definition in time-domain is as follows:
+
+[.text-center]
+[latexmath]
+++++
+w[n] = 0.5 \left( 1 - \cos\left( \frac{2\pi n}{N-1} \right) \right),
+\quad 0 \le n \le N-1
+++++
+
+Since this function is designed so that:
+
+[.text-center]
+[latexmath]
+++++
+w[0] = w[N-1] ~ 0
+++++
+
+at edge parts of window, signal transitions become smoother and thus sidelobe levels are lowered. Time-domain and frequency-domain graphics of Hann window are given below:
+
+.Hann Window
+image::3.png[width=90%,align=center]
+
+=== Tukey Window
+
+Tukey window is tapered-cosine type window function carrying transition characteristic between Rectangular and Hann windows; meaning it shows Hann window behavior at edge parts and Rectangular window behavior in remaining middle parts.
+
+Shape of window is controlled by latexmath:[\alpha] parameter. This parameter changes size of part where cosine is applied. When this value is 0, Rectangular window is formed; when 1, Hann window is formed. Situation regarding latexmath:[\alpha] parameter is located below:
+
+[.text-center]
+[latexmath]
+++++
+\alpha = 0  \Rightarrow \text{Rectangular window},
+\\
+\alpha = 1  \Rightarrow \text{Hann window},
+\\
+0 < \alpha < 1 \Rightarrow \text{Tapered cosine (hybrid)}
+++++
+
+Mathematical definition of Tukey window in time domain is as follows:
+
+[.text-center]
+[latexmath]
+++++
+w[n] =
+\begin{cases}
+\frac{1}{2}
+\left(
+1 + \cos\left(
+\pi \left( \frac{2n}{\alpha (N-1)} - 1 \right)
+\right)
+\right),
+& 0 \le n < \frac{\alpha (N-1)}{2}
+\\[10pt]
+1,
+& \frac{\alpha (N-1)}{2} \le n \le (N-1)\left( 1 - \frac{\alpha}{2} \right)
+\\[10pt]
+\frac{1}{2}
+\left(
+1 + \cos\left(
+\pi \left(
+\frac{2n}{\alpha (N-1)}
+- \frac{2}{\alpha}
++ 1
+\right)
+\right)
+\right),
+& (N-1)\left( 1 - \frac{\alpha}{2} \right) < n \le N-1
+\end{cases}
+++++
+
+Thanks to this structure, taper region of window can be adjusted with latexmath:[\alpha]; thus flexible balance is provided between sidelobe levels, mainlobe width and spectral leakage.
+
+.Tukey Window
+image::4.png[width=90%,align=center]
+
+<<<
+
+== Chirp Signals After Windowing
+
+After basic information shared about Chirp and window functions, windowing will be applied to LFM and HFM chirp signals and analyzed under this heading. In this context, effect of different window functions will be compared.
+
+=== LFM
+
+Formulas mentioned in https://www.linkedin.com/feed/update/urn:li:activity:7395898120359833600[this article] previously were used while examining LFM signals. Also, values specified in list below were used as parameters. Up-chirp was preferred as chirp:
+
+* *latexmath:[f_{0}]*: 20 kHz
+* *latexmath:[f_{1}]*: 30 kHz
+* *latexmath:[T]*: 20 ms
+* *latexmath:[Sample Rate]*: 200 kHz
+
+[[time-domain]]
+==== Time-domain
+
+LFM chirp signal with Rectangular, Hann and Tukey window functions applied is found in time-domain figure below:
+
+.Time-Amplitude Graph
+image::5.png[width=90%,align=center]
+
+Graph above clearly reveals how different window functions behave on same LFM chirp signal. Since signal is cut without any smoothing along full amplitude in Rectangular window, chirp waveform contains abrupt transitions at start and end points.
+
+When Hann window is applied, start and end sections of signal soften significantly and amplitude transforms into shape of full cosine peak. Reason for this behavior is mathematical form of Hann window being half period of cosine function. Therefore, Hann window function encloses chirp signal into symmetric envelope where amplitude increases and decreases over time.
+
+When Tukey window is applied, behavior between Hann and Rectangular window functions is observed. Signal appearing like cosine up to certain part appears as if Rectangular window applied in middle parts.
+
+Effect of windowing technique cannot be easily seen in Time-domain graph. Therefore, FFT of signals with window function applied was taken in following headings.
+
+[[fft-mag]]
+==== FFT (Magnitude Scale)
+
+Below is graph of magnitude-scale FFT of LFM chirp signal with Rectangular, Hann and Tukey window functions applied:
+
+.FFT (Amplitude) Graph
+image::6.png[width=90%,align=center]
+
+When frequency spectrum of LFM chirp signal is examined, determinant effect of applied windowing technique on spectral smoothness and in-band ripple is clearly seen. In signal with Rectangular window applied, although target bandwidth between 20 kHz and 30 kHz is fully visible, it exhibits severe amplitude fluctuations across spectrum. These oscillations, called Fresnel ripples, are natural result of signal's abrupt start and end in time-domain reflecting to frequency-domain and distort ideal flat-top bandwidth representation.
+
+In contrast, when Hann window is applied, it is observed that these harsh fluctuations in spectrum are completely damped but geometry of spectrum also undergoes radical change. Dominant amplitude modulation in time-domain transforms signal in frequency-domain into bell-curve-like form. Although this situation cleans unwanted ripples perfectly, it may diverge from wideband and constant amplitude characteristic of chirp signal, which complicates visual analysis of effective bandwidth.
+
+Tukey window offers optimized solution between these two extreme approaches. As seen in bottom part of graph, Tukey window succeeds in preserving original energy distribution and bandwidth limits of signal by creating "plateau" similar to Rectangular window in middle region of spectrum. At the same time, thanks to smoothing effect in transition regions, it suppresses aggressive Fresnel ripples seen in raw signal with performance close to Hann window. Thus, signal protects both in-band smoothness and energy is spread smoothly within band.
+
+[[fft-db]]
+==== FFT (dB Scale)
+
+Below is graph of dB-scale FFT of LFM chirp signal with Rectangular, Hann and Tukey window functions applied:
+
+.FFT (dB) Graph
+image::7.png[width=90%,align=center]
+
+Analysis performed in dB scale enables clear visualization of low amplitude components and spectral leakage effects overlooked in graph shared in previous heading. It is seen that out-of-band components dampen quite slowly in signal with Rectangular window applied in first graph. These high-level sidelobes limit dynamic range and complicate detection of weak signals at nearby frequencies.
+
+Dramatic increase in sidelobe suppression performance is remarkable when Hann window is applied. Out-of-band energy of signal dampens rapidly and goes down to very low noise floor level. This window function provides high dynamic range by minimizing spectral leakage; however, it causes some decrease in frequency resolution within band.
+
+Tukey window offers balanced trade-off between these two situations. It does not lower signal amplitude by maintaining its flat structure in passband region as in Rectangular window. At the same time, it pulls sidelobe levels significantly down compared to Rectangular window thanks to edge smoothing. Although it does not provide reduction as aggressive as Hann, it creates optimum point between energy efficiency and leakage suppression.
+
+[[spectrogram]]
+==== Spectrogram
+
+Below is spectrogram graph of LFM chirp signal with Rectangular, Hann and Tukey window functions applied:
+
+.Spectrogram (Frequency-Time) Graph
+image::8.png[width=90%,align=center]
+
+Spectrogram graphs clearly show how window functions affect energy distribution in time-frequency plane. It is clearly seen that levels are high outside chirp band when Rectangular window is used.
+
+When Hann window is applied, spectrogram becomes much cleaner and high levels at frequencies outside chirp band fall significantly. It is seen that leakage is suppressed more homogeneously over time, and areas outside chirp band are darker and stable.
+
+Tukey window offers spectrum between Rectangular and Hann due to latexmath:[\alpha] parameter. Although out-of-band energy is slightly higher than Hann in graph, sharp and wide leakage traces like in Rectangular are not present. Tukey window both keeps energy inside chirp band stable and carries leakage suppression along time axis to level close to Hann. Part containing main band is thicker because in-band energy distributes homogeneously within band unlike in Hann window.
+
+=== HFM
+
+Formulas mentioned in https://www.linkedin.com/feed/update/urn:li:activity:7395898120359833600[this article] previously were used while examining HFM signals. Also, values specified in list below were used as parameters. Up-chirp was preferred as chirp:
+
+* *latexmath:[f_{0}]*: 20 kHz
+* *latexmath:[f_{1}]*: 50 kHz
+* *latexmath:[T]*: 20 ms
+* *latexmath:[Sample Rate]*: 200 kHz
+
+Since result is similar to effect in LFM chirp signals in headings other than spectrogram in terms of behavior, only graphs are shared under relevant headings. LFM heading can be examined for analysis.
+
+==== Time-domain
+
+HFM chirp signal with Rectangular, Hann and Tukey window functions applied is found in time-domain figure below:
+
+.Time-Amplitude Graph
+image::9.png[width=90%,align=center]
+
+==== FFT (Magnitude Scale)
+
+Below is graph of magnitude-scale FFT of HFM chirp signal with Rectangular, Hann and Tukey window functions applied:
+
+.FFT (Amplitude) Graph
+image::10.png[width=90%,align=center]
+
+==== FFT (dB Scale)
+
+Below is graph of dB-scale FFT of HFM chirp signal with Rectangular, Hann and Tukey window functions applied:
+
+.FFT (dB) Graph
+image::11.png[width=90%,align=center]
+
+==== Spectrogram
+
+Below is spectrogram graph of HFM chirp signal with Rectangular, Hann and Tukey window functions applied:
+
+.Spectrogram (Frequency-Time) Graph
+image::12.png[width=90%,align=center]
+
+Situation similar to effect in LFM chirp signals is clearly seen in terms of behavior and shape. For more information on signals, <<spectrogram>> heading under LFM should be examined. Unlike analyses in LFM, there are very obvious differences in color in main band. Although Tukey window is not as successful as Hann outside band, energy difference in main band is seen very clearly when lightness-darkness of colors is examined. Tukey window preserves in-band energy distribution more homogeneously.
+
+<<<
+
+== Conclusion
+
+Within scope of this article, effects of different window functions on both LFM and HFM chirp signals were examined in detail. When time-domain behaviors and frequency-domain outputs of Rectangular, Hann and Tukey window functions were compared, distinct differences emerged especially regarding spectral leakage, sidelobe levels, passband geometry and energy distribution. Aggressive Fresnel ripples and high sidelobe levels of Rectangular window clearly demonstrated why raw chirp without windowing creates problem in analysis; while strong leakage suppression of Hann window but transformation of passband structure into bell curve form revealed that this function may not always yield ideal result in wideband chirp signals. Tukey window offered practical solution for wideband chirp signals by presenting balanced trade-off between energy distribution and leakage control thanks to its hybrid structure.
+
+Obtained results reveal that choice of windowing seriously affects not only FFT output but also time-frequency analyses like spectrogram. Fact that Tukey window specifically suppresses out-of-band components significantly while preserving in-band energy in both LFM and HFM signals confirms that window choice is critical design parameter in real-time DSP applications.
+
+In next article of series, focus will be on hardware implementation of these signals whose theoretical analysis and simulations were completed with Python. In this context, implementation of LFM and HFM chirp signals on Xilinx FPGAs using Microblaze soft processor will be performed and related codes will be shared.

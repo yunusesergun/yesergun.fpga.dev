@@ -1,0 +1,271 @@
+= Chirp Sinyallerinde Windowing
+Yunus Esergün <yunusesergun2316@gmail.com>
+:stem: latexmath
+:toc:
+:toclevels: 4
+:imagesdir: assets
+:sectnums:
+
+<<<
+
+== Giriş
+
+Daha önce https://www.linkedin.com/feed/update/urn:li:activity:7395898120359833600[bu linkte] bulunan yazıda chirp sinyallerine giriş yapılmıştı. Bu kapsamda:
+
+* Chirp sinyal çeşitleri
+* LFM ve HFM chirp sinyallerinin matematiği
+* Python kodları ile LFM ve HFM chirp sinyallerinin analizi
+
+konularından bahsedildi. Bu yazı kapsamında ise:
+
+* Window fonksiyon çeşitleri ve matematiği
+* Chirp sinyallerine window sinyallerinin uygulanması
+* Chirp+window sinyallerinin Python dili kullanılarak analizi
+
+konularından bahsedilecek.
+
+Windowing (pencereleme), time domain'deki bir sinyalin belirli bir bölümünü, FFT gibi frekans domain analizlerine hazırlarken, bu sinyalin uç (edge) noktalarında oluşan ani kesilmelerin neden olduğu spectral leakage etkisini azaltmak için kullanılan temel bir tekniktir. Bu teknikte kullanılan sinyaller, window fonksiyonları veya sinyalleri şeklinde tanımlanabilir.
+
+Özellikle belli bir uzunluğa sahip (finite-duration) sinyallerde, sinyalin FFT’si alınırsa keskin geçişler frekans domain'inde istenmeyen sidelobe’lara ve enerji yayılmalarına yol açar. Windowing, sinyali analizden önce yumuşatarak bu geçişleri azaltır ve spektrumun daha temiz ve daha anlamlı görünmesini sağlar. Bu teknik uygulanırken, temel olarak time-domain sinyal ile window fonksiyonu çarpılır.
+
+Aşağıda, yazı kapsamında bahsedilmeyecek ama yine de örnek olabilecek bir windowing fonksiyonu olan Hamming window'una dair time-domain ve frequency-domain (dB scale) grafikleri yer almaktadır.
+
+.Hamming Window Example
+image::1.png[width=90%,align=center]
+
+Yukarıdaki sinyalde ve diğer window fonksiyon çeşitlerinde enerjinin 0 Hz'de yoğunlaşmasının sebebi hızlı osilasyonların olmaması ve ortalama değerinin sıfırdan büyük olmasıdır.
+
+<<<
+
+== Window Fonksiyonlarının Matematiği
+
+Chirp sinyalleri gibi geniş bantlı ve zamana göre değişen frekans yapısına sahip sinyallerde windowing daha da kritik bir rol oynar; çünkü chirp sinyalinin enerjisi geniş bir frekans aralığına yayılır ve sınır kısımları bu geniş bantlı yapıda daha belirgin leakage oluşturur. Bu nedenle Hann, Hamming, Tukey, Blackman veya Kaiser gibi window fonksiyonları, chirp sinyallerinin FFT analizlerinde sidelobe seviyelerinin kontrolü ve in-band ripple (bant içerisindeki salınımlar) minimizasyonu açısından hayati önem taşır.
+
+Bu başlık altında, örnek olması açısından, sonar ve radar alanlarında çokça kullanılan; Rectangular, Hann ve Tukey window fonksiyonlarından bahsedilmiştir. Ayrıca, örnek projede sadece bu üç window çeşidi kullanılarak analizler yapılmıştır.
+
+=== Rectangular Window
+
+Rectangular window, window fonksiyonlarının en basit ve en temel olanıdır. Her örneğin genliği sabit olup time-domain’de herhangi bir yumuşatma uygulanmaz. Başka bir deyişle, sinyal doğrudan kesilerek FFT’ye verilmiş olur. Time-domain’deki matematiksel tanımı:
+
+[.text-center]
+[latexmath]
+++++
+w[n] = 1, \quad 0 \le n \le N-1
+++++
+
+Bu pencere, uç değerlerde:
+
+[.text-center]
+[latexmath]
+++++
+w[0] = w[N-1] = 1
+++++
+
+olacak şekilde sıfır tapering (yumuşatma) içerir. Dolayısıyla sinyalin baş ve son noktalarında hiçbir geçiş yumuşatması yoktur. Bu, time-domain’de keskin geçişler (discontinuity) yaratır ve FFT sırasında oldukça belirgin spectral leakage oluşmasına sebep olur. Rectangular window, frequency-domain'de ideal olmayan, geniş sidelobe’lara sahip bir sinc fonksiyonuna benzer; bu nedenle sidelobe suppression (yan bant bastırması) oldukça zayıftır.
+
+Rectangular window'un time-domain ve frequency-domain grafikleri aşağıda verilmiştir:
+
+.Rectangular Window
+image::2.png[width=90%,align=center]
+
+=== Hann Window
+
+Hann window, sinyalin baş ve son kısımlarını yumuşatarak FFT işlemi sırasında oluşan spectral leakage etkisini azaltmayı amaçlayan window fonksiyonlarından biridir. Yani bu sayede sinyalin uç kısımlarının etkisi azalmış olur. Bu fonksiyon temelde bir kosinüs sinyalinin yarısıdır. Time-domain'deki matematiksel tanımı şöyledir:
+
+[.text-center]
+[latexmath]
+++++
+w[n] = 0.5 \left( 1 - \cos\left( \frac{2\pi n}{N-1} \right) \right),
+\quad 0 \le n \le N-1
+++++
+
+Bu fonksiyon, pencerenin uç kısımlarında:
+
+[.text-center]
+[latexmath]
+++++
+w[0] = w[N-1] ~ 0
+++++
+
+olacak şekilde tasarlandığından, sinyal geçişleri daha yumuşak olur ve böylece sidelobe seviyeleri düşürülür. Hann window'un time-domain ve frequency-domain grafikleri aşağıda verilmiştir:
+
+.Hann Window
+image::3.png[width=90%,align=center]
+
+=== Tukey Window
+
+Tukey window, Rectangular ve Hann window arasında bir geçiş niteliği taşıyan 
+tapered-cosine (yumuşatılmış kosinüs) türünde bir window fonksiyonudur yani uç kısımlarda Hann window davranışı gösterir, geri kalan orta kısımlarda ise Rectangular window davranışı gösterir.
+
+Pencerenin şekli latexmath:[\alpha] parametresi ile kontrol edilir. Bu parametre kosinüs uygulanacak kısmın büyüklüğünü değiştirir. Bu değerin 0 olduğu durumda window Rectangular, 1 olduğu durumda Hann window oluşur. latexmath:[\alpha] parametresi ile ilgili durum aşağıda yer almaktadır:
+
+[.text-center]
+[latexmath]
+++++
+\alpha = 0  \Rightarrow \text{Rectangular window}
+\\
+\alpha = 1  \Rightarrow \text{Hann window}
+\\
+0 < \alpha < 1 \Rightarrow \text{Tapered cosine (hibrit)}
+++++
+
+Tukey window'un time domain'indeki matematiksel tanımı şu şekildedir:
+
+[.text-center]
+[latexmath]
+++++
+w[n] =
+\begin{cases}
+\frac{1}{2}
+\left(
+1 + \cos\left(
+\pi \left( \frac{2n}{\alpha (N-1)} - 1 \right)
+\right)
+\right),
+& 0 \le n < \frac{\alpha (N-1)}{2}
+\\[10pt]
+1,
+& \frac{\alpha (N-1)}{2} \le n \le (N-1)\left( 1 - \frac{\alpha}{2} \right)
+\\[10pt]
+\frac{1}{2}
+\left(
+1 + \cos\left(
+\pi \left(
+\frac{2n}{\alpha (N-1)}
+- \frac{2}{\alpha}
++ 1
+\right)
+\right)
+\right),
+& (N-1)\left( 1 - \frac{\alpha}{2} \right) < n \le N-1
+\end{cases}
+++++
+
+Bu yapı sayesinde pencerenin taper bölgesi latexmath:[\alpha] ile ayarlanabilir; böylece sidelobe seviyeleri, mainlobe genişliği ve spectral leakage arasında esnek bir denge sağlanır.
+
+.Tukey Window
+image::4.png[width=90%,align=center]
+
+<<<
+
+== Windowing Sonrası Chirp Sinyalleri
+
+Chirp ve window fonksiyonları konusunda paylaşılan temel bilgilerden sonra bu başlık altında LFM ve HFM chirp sinyallerine windowing uygulanacak ve analizi yapılacaktır. Bu bağlamda farklı window fonksiyonlarının etkisi karşılaştırılacaktır.
+
+=== LFM
+
+LFM sinyallerinde inceleme yapılırken daha önce https://www.linkedin.com/feed/update/urn:li:activity:7395898120359833600[bu yazıda] bahsedilmiş olan formüller kullanılmıştır. Ayrıca, parametre olarak aşağıdaki listede belirtilen değerler kullanılmıştır. Chirp olarak up-chirp tercih edilmiştir:
+
+* *latexmath:[f_{0}]*: 20 kHz
+* *latexmath:[f_{1}]*: 30 kHz
+* *latexmath:[T]*: 20 ms
+* *latexmath:[Sample Rate]*: 200 kHz
+
+[[time-domain]]
+==== Time-domain
+
+Aşağıdaki time-domain figürde Rectangular, Hann ve Tukey window fonksiyonu uygulanmış LFM chirp sinyali bulunmaktadır:
+
+.Zaman-Genlik Grafiği
+image::5.png[width=90%,align=center]
+
+Yukarıdaki grafik, farklı window fonksiyonlarının aynı LFM chirp sinyali üzerinde nasıl davranış gösterdiğini açıkça ortaya koymaktadır. Rectangular window’da sinyal tam genliği boyunca hiçbir yumuşatma uygulanmadan kesildiği için, chirp dalga formu başlangıç ve bitiş noktalarında ani geçişler içerir.
+
+Hann window uygulandığında ise sinyalin baş ve son bölümleri belirgin bir şekilde yumuşar ve genlik, tam bir kosinüs tepeciği şekline dönüşür. Bu davranışın sebebi Hann penceresinin matematiksel olarak bir kosinüs fonksiyonunun yarım periyodu şeklinde olmasıdır. Dolayısıyla Hann window fonksiyonu, chirp sinyalini sanki genliği zaman içinde artan ve azalan simetrik bir envelope içine alır.
+
+Tukey window uygulandığında ise Hann ile Rectangular window fonksiyonlarının arasında bir davranış gözlemlenmektedir. Belli bir kısıma kadar kosinüs gibi gözüken sinyal, orta kısımlarda Rectangular window uygulanmış gibi gözükmektedir.
+
+Time-domain grafiğinde windowing tekniğinin etkisi kolayca görülememektedir. Bu yüzden, bir sonraki başlıklarda, window fonksiyonu uygulanmış sinyallerin FFT'si alınmıştır.
+
+[[fft-mag]]
+==== FFT (Magnitude Scale)
+
+Aşağıda Rectangular, Hann ve Tukey window fonksiyonu uygulanmış LFM chirp sinyalinin magnitude-scale FFT'sinin grafiği bulunmaktadır:
+
+.FFT (Genlik) Grafiği
+image::6.png[width=90%,align=center]
+
+LFM chirp sinyalinin frekans spektrumu incelendiğinde, uygulanan windowing tekniğinin spektral düzgünlük ve bant içi ripple üzerindeki belirleyici etkisi net bir şekilde görülmektedir. Rectangular window uygulanmış sinyalde, 20 kHz ile 30 kHz arasındaki hedef bant genişliği tam olarak görülebilse de, spektrum boyunca şiddetli genlik dalgalanmaları sergiler. Fresnel dalgalanmaları (Fresnel ripples) olarak adlandırılan bu osilasyonlar, sinyalin time-domain'deki ani başlangıç ve bitişlerinin frequency-domain'e yansıyan doğal bir sonucudur ve ideal kare formunu bozar.
+
+Buna karşılık Hann penceresi uygulandığında, spektrumdaki bu sert dalgalanmaların tamamen sönümlendiği ancak spektrumun geometrisinin de köklü bir değişime uğradığı gözlemlenir. Time-domain'deki baskın genlik modülasyonu, frequency-domain'deki sinyali çan eğrisi benzeri bir forma dönüştürür. Bu durum, istenmeyen ripple'ları mükemmel şekilde temizlese de, chirp sinyalinin geniş bantlı ve sabit genlikli karakteristiğinden uzaklaşabilir, bu da efektif bant genişliğinin görsel analizini zorlaştırır.
+
+Tukey window ise bu iki uç yaklaşım arasında optimize edilmiş bir çözüm sunar. Grafiğin en alt kısmında görüldüğü üzere Tukey window, spektrumun orta bölgesinde Rectangular window'a benzer bir "plato" oluşturarak sinyalin orijinal enerji dağılımını ve bant genişliği sınırlarını korumayı başarır. Aynı zamanda, geçiş bölgelerindeki yumuşatma etkisi sayesinde, ham sinyalde görülen agresif Fresnel dalgalanmalarını Hann penceresine yakın bir performansla bastırır. Böylece sinyal, hem bant içi düzgünlüğünü korur hem de enerji bant içinde düzgün yayılmış olur.
+
+[[fft-db]]
+==== FFT (dB Scale)
+
+Aşağıda Rectangular, Hann ve Tukey window fonksiyonu uygulanmış LFM chirp sinyalinin dB-scale FFT'sinin grafiği bulunmaktadır:
+
+.FFT (dB) Grafiği
+image::7.png[width=90%,align=center]
+
+dB ölçekte yapılan analiz, bir önceki başlıkta paylaşılan grafikte gözden kaçan düşük genlikli bileşenlerin ve spectral leakage etkilerinin net bir şekilde görülmesini sağlar. İlk grafikteki Rectangular window uygulanmış sinyalde, bant dışı bileşenlerin oldukça yavaş sönümlendiği görülmektedir. Yüksek seviyeli bu sidelobe’lar, dynamic range'i sınırlar ve yakın frekanslardaki zayıf sinyallerin tespitini zorlaştırır.
+
+Hann window uygulandığında ise sidelobe bastırma performansındaki dramatik artış dikkat çekicidir. Sinyalin bant dışı enerjisi hızla sönümlenerek çok düşük bir noise floor (gürültü tabanı) seviyesine iner. Bu window fonksiyonu, spectral leakage'ı minimize ederek yüksek dynamic range sağlar; ancak bant içerisinde frekans çözünürlüğünün bir miktar azalmasına neden olur.
+
+Tukey window ise bu iki durum arasında dengeli bir trade-off sunar. Rectangular window'da olduğu gibi passband bölgesinde düz yapısını koruyarak sinyal genliğini düşürmez. Aynı zamanda, kenar yumuşatmaları sayesinde sidelobe seviyelerini Rectangular window'a kıyasla belirgin şekilde aşağı çeker. Hann kadar agresif bir azalma sağlamasa da, enerji verimliliği ve sızıntı bastırma arasında optimum bir nokta oluşturur.
+
+[[spectrogram]]
+==== Spectrogram
+
+Aşağıda Rectangular, Hann ve Tukey window fonksiyonu uygulanmış LFM chirp sinyalinin spectrogram grafiği bulunmaktadır:
+
+.Spectrogram (Frekans-Zaman) Grafiği
+image::8.png[width=90%,align=center]
+
+Spectrogram grafikleri, window fonksiyonlarının zaman-frekans düzlemindeki enerji dağılımını nasıl etkilediğini net göstermektedir. Rectangular window kullanıldığında chirp bandının dışında seviyelerin yüksek olduğu açıkça görülmektedir.
+
+Hann window uygulandığında spectrogram çok daha temiz hale gelmekte ve chirp bandı dışında kalan frekanslarda yüksek seviyeler ciddi şekilde düşmektedir. Leakage'ın zaman boyunca daha homojen şekilde bastırıldığı, chirp bandının dışındaki alanların daha koyu ve kararlı olduğu görülmektedir.
+
+Tukey window ise latexmath:[\alpha] parametresinden dolayı Rectangular ve Hann arasında bir spektrum sunmaktadır. Grafikte bant dışı enerji Hann’e göre biraz daha yüksek olsa da Rectangular’daki gibi keskin ve geniş leakage izleri bulunmamaktadır. Tukey window, hem chirp bandı içindeki enerjiyi stabil tutar hem de zaman ekseni boyunca leakage bastırmasını Hann’e yakın bir seviyeye taşır. Ana bandın bulunduğu kısım daha kalındır çünkü bant içi enerji Hann window'dakinden farklı olarak bant içinde homojen dağılır.
+
+=== HFM
+
+HFM sinyallerinde inceleme yapılırken daha önce https://www.linkedin.com/feed/update/urn:li:activity:7395898120359833600[bu yazıda] bahsedilmiş olan formüller kullanılmıştır. Ayrıca, parametre olarak aşağıdaki listede belirtilen değerler kullanılmıştır. Chirp olarak up-chirp tercih edilmiştir:
+
+* *latexmath:[f_{0}]*: 20 kHz
+* *latexmath:[f_{1}]*: 50 kHz
+* *latexmath:[T]*: 20 ms
+* *latexmath:[Sample Rate]*: 200 kHz
+
+Davranış olarak spectrogram harici başlıklarda sonuç, LFM chirp sinyallerindeki etki ile benzer olduğu için ilgili başlıklar altında sadece grafikler paylaşılmıştır. Analiz için LFM başlığı incelenebilir. 
+
+==== Time-domain
+
+Aşağıdaki time-domain figürde Rectangular, Hann ve Tukey window fonksiyonu uygulanmış HFM chirp sinyali bulunmaktadır:
+
+.Zaman-Genlik Grafiği
+image::9.png[width=90%,align=center]
+
+==== FFT (Magnitude Scale)
+
+Aşağıda Rectangular, Hann ve Tukey window fonksiyonu uygulanmış HFM chirp sinyalinin magnitude-scale FFT'sinin grafiği bulunmaktadır:
+
+.FFT (Genlik) Grafiği
+image::10.png[width=90%,align=center]
+
+==== FFT (dB Scale)
+
+Aşağıda Rectangular, Hann ve Tukey window fonksiyonu uygulanmış HFM chirp sinyalinin dB-scale FFT'sinin grafiği bulunmaktadır:
+
+.FFT (dB) Grafiği
+image::11.png[width=90%,align=center]
+
+==== Spectrogram
+
+Aşağıda Rectangular, Hann ve Tukey window fonksiyonu uygulanmış HFM chirp sinyalinin spectrogram grafiği bulunmaktadır:
+
+.Spectrogram (Frekans-Zaman) Grafiği
+image::12.png[width=90%,align=center]
+
+Davranış ve şekil olarak LFM chirp sinyallerinde etki ile benzer bir durum açıkça görülmektedir. Sinyaller konusunda daha fazla bilgi için LFM altındaki <<spectrogram>> başlığı incelenmeli. LFM'deki analizlerden farklı olarak ana bantta renk olarak çok bariz farklar bulunmaktadır. Tukey window her ne kadar bant dışında Hann kadar başarılı olmasa da ana banttaki enerji farkı renklerin açıklığı-koyuluğu incelendiğinde çok bariz görülmektedir. Tukey window, bant içi enerji dağılımını daha homojen korur.
+
+<<<
+
+== Sonuç
+
+Bu yazı kapsamında, farklı window fonksiyonlarının hem LFM hem de HFM chirp sinyalleri üzerindeki etkileri detaylı olarak incelendi. Rectangular, Hann ve Tukey window fonksiyonlarının time-domain davranışları ile frequency-domain çıktıları karşılaştırıldığında, özellikle spectral leakage, sidelobe seviyeleri, passband geometrisi ve energy distribution açısından belirgin farklılıklar ortaya çıktı. Rectangular window’un agresif Fresnel dalgalanmaları ve yüksek sidelobe seviyeleri, windowing yapılmamış bir chirp’in neden ham hâliyle analizde problem oluşturduğunu açık şekilde gösterirken; Hann window’un güçlü leakage bastırması fakat passband yapısını çan eğrisi formuna dönüştürmesi, bu fonksiyonun geniş bantlı chirp sinyallerinde her zaman ideal sonuç vermeyebileceğini ortaya koydu. Tukey window ise hibrit yapısı sayesinde enerji dağılımı ile leakage kontrolü arasında dengeli bir trade-off sunarak geniş bant chirp sinyalleri için pratik bir çözüm sundu.
+
+Elde edilen sonuçlar, windowing seçiminin yalnızca FFT çıktısını değil, aynı zamanda spectrogram gibi zaman-frekans analizlerini de ciddi şekilde etkilediğini ortaya koymaktadır. Özellikle Tukey window’un hem LFM hem de HFM sinyallerinde bant içi enerjiyi korurken bant dışı bileşenleri belirgin şekilde bastırması, gerçek zamanlı DSP uygulamalarında window seçiminin kritik bir tasarım parametresi olduğunu doğrulamaktadır.
+
+Serinin bir sonraki yazısında, teorik analizi ve simülasyonları Python ile tamamlanan bu sinyallerin donanım üzerindeki gerçeklemesine odaklanılacaktır. Bu bağlamda, LFM ve HFM chirp sinyallerinin Xilinx FPGA'lerde, Microblaze soft işlemcisi kullanılarak implementasyonu yapılacak ve konuyla ilgili kodlar paylaşılacaktır.
