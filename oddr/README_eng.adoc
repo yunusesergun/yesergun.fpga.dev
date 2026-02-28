@@ -1,0 +1,167 @@
+= ODDR Primitive
+Yunus Esergün <yunusesergun2316@gmail.com>
+:stem: latexmath
+:toc:
+:toclevels: 4
+:imagesdir: assets
+:sectnums:
+
+<<<
+
+== Introduction
+
+`ODDR (Output Double Data Rate)` is a primitive provided by Xilinx in the Vivado environment. Below, there is a visual showing the pins of the relevant primitive. Normally, it has many functions, but the feature that will be examined within the scope of this article is the `clock forwarding` feature. In other words, when a clock needs to be driven outside the FPGA in a controlled manner in terms of `duty-cycle` and `phase`, the mentioned primitive should be used. AMD/Xilinx directly recommends this under the `Creating an Output Clock` heading in the UG949 Ultrafast Design Methodology document.
+
+.ODDR Primitive
+image::1.png[width=30%,align=center]
+
+=== ODDR Primitive Pins
+
+The table below shows what the pins do:
+
+[cols="1,1,3,5", options="header"]
+|===
+|Pin |Direction |What does it do? |Notes / Example usage
+
+|C
+|Input
+|ODDR's clock input.
+|The Q output is updated at the clock edges. When doing clock forwarding, the MMCM/PLL output is usually connected here.
+
+|D1
+|Input
+|The first (DDR) data input of the Q port.
+|Generally transferred to Q on the *falling edge* (depending on the DDR_CLK_EDGE parameter). Example usage for clock forwarding: `D1='1'`.
+
+|D2
+|Input
+|The second (DDR) data input of the Q port.
+|Generally transferred to Q on the *rising edge* (depending on the DDR_CLK_EDGE parameter). Example usage for clock forwarding: `D2='0'`.
+
+|CE
+|Input
+|Clock enable: controls the ODDR's Q output, turning it off and on.
+|Operates normally when `CE='1'`. When `CE='0'`, Q generally holds its last value.
+
+|R
+|Input
+|Reset input: resets the Q port.
+|Synchronous/asynchronous behavior can be determined by parameters such as `SRTYPE`. Typically, when `R` is 1, Q is forced to 0.
+
+|S
+|Input
+|Set input: forces Q to 1.
+|Synchronous/asynchronous behavior depends on the parameter. Typically, when `S` is 1, Q is forced to 1.
+
+|Q
+|Output
+|ODDR output (the clock signal connected to the pin).
+|The DDR logic is visible here: different values can appear on the two edges of the clock.
+|===
+
+The table for the parameters in the primitive is below:
+
+[cols="1,1,3,1, 5", options="header"]
+|===
+|Parameter |Type |Possible values |Default |What does it do?
+
+|DDR_CLK_EDGE
+|STRING
+|"OPPOSITE_EDGE", "SAME_EDGE"
+|"OPPOSITE_EDGE"
+|Selects the ODDR's DDR behavior mode: determines on which edges D1/D2 are transferred to Q and the "same-edge" behavior. Examples related to this part will be given in the following sections.
+
+|INIT
+|STD_LOGIC
+|0, 1
+|0
+|Determines the initial value of the Q output.
+
+|SRTYPE
+|STRING
+|"SYNC", "ASYNC"
+|"SYNC"
+|Selects whether the Set/Reset (S and R pins) behavior will be synchronous or asynchronous.
+|===
+
+=== Purpose of Using the ODDR Primitive
+
+If a clock inside the FPGA will be "forwarded" outside to clock external ICs, etc., doing this with ODDR is very effective. The basic logic and reasons are listed below:
+
+- If one of the ODDR's two data inputs is fixed to 1 and the other to 0 (D1 and D2), ODDR produces a highly controlled clock on the pin because it outputs the next value at every clock edge. In this way, the duty-cycle and phase relationship become more predictable.
+- By swapping the positions of the D1/D2 constants, it becomes easy to obtain the clock in inverse phase (180 degrees). There is no need for complex interfaces with MMCM, etc. The 180-degree expression here is defined according to the selected reference clock and the D1/D2 polarity used.
+- By using the ODDR's CE (clock enable) and set/reset ports, the output clock can be paused and the clock at the output can be held at the desired polarity (at 0 or 1). It is recommended that the CE signal be generated synchronously to the C clock domain if possible.
+- Generating the clock in the fabric with normal logic/FF and driving it to the pin puts the clock onto a "data-like" path. ODDR, on the other hand, moves clock generation to the IO output DDR register structure.
+
+In addition to this, by entering the timing constraints correctly, the operation of driving a clock outside is performed correctly. The timing constraint part is not included within the scope of this article.
+
+<<<
+
+== Experiments and Results
+
+=== Wavedrom Figures
+
+The ODDR settings used within the scope of the article are given in the code snippet below. Since the Basys3 demo board was used in the project, the Artix-7 ODDR primitive was used. The name/primitive may be different in the UltraScale+ family (e.g., ODDRE1):
+
+[source,vhdl]
+----
+   -- ODDR: Output Double Data Rate Output Register with Set, Reset
+   --       and Clock Enable.
+   --       Artix-7
+   -- Xilinx HDL Language Template, version 2024.1
+
+   ODDR_inst : ODDR
+   generic map(
+      DDR_CLK_EDGE => "SAME_EDGE", -- "OPPOSITE_EDGE" or "SAME_EDGE"
+      INIT => '0',                 -- Initial value for Q port ('1' or '0')
+      SRTYPE => "SYNC")            -- Reset Type ("ASYNC" or "SYNC")
+   port map (
+      Q  => clk_out, -- 1-bit DDR output
+      C  => clk_in,  -- 1-bit clock input
+      CE => clk_en,  -- 1-bit clock enable input
+      D1 => '1',     -- 1-bit data input (positive edge)
+      D2 => '0',     -- 1-bit data input (negative edge)
+      R  => '0',     -- 1-bit reset input
+      S  => '0'      -- 1-bit set input
+   );
+----
+
+In the demo project, a 5 MHz clock is generated from the 100 MHz clock using an MMCM. A certain `enable` signal toggles at a certain clock cycle, and this enable signal is the CE signal in the ODDR primitive. In this way, the response of the ODDR primitive under different settings was measured.
+
+According to the `DDR_CLK_EDGE` parameter in the ODDR primitive, the edge position and phase of the clock driven outside change. In this context, in the first image below, the relevant parameter is selected as `SAME_EDGE`. The `clk_in`, `clk_en`, and `clk_out` signals represent the `C`, `CE`, and `Q` pins in the primitive, respectively:
+
+.DDR_CLK_EDGE=SAME_EDGE
+image::2.png[width=100%,align=center]
+
+In the image below, the relevant parameter is selected as `OPPOSITE_EDGE`. The `clk_in`, `clk_en`, and `clk_out` signals represent the `C`, `CE`, and `Q` pins in the primitive, respectively:
+
+.DDR_CLK_EDGE=OPPOSITE_EDGE
+image::7.png[width=100%,align=center]
+
+=== Oscilloscope Figures
+
+In addition to the drawing, visuals were captured both from the oscilloscope itself and from the application on the computer using my OWON SDS220S model oscilloscope at home. The visuals are shown below in order. In the first visuals, the parameter `SAME_EDGE` was selected. The blue one represents the `CE` pin in the ODDR, and the yellow one represents the `Q` pin:
+
+.DDR_CLK_EDGE=SAME_EDGE
+image::5.jpg[width=100%,align=center]
+
+.DDR_CLK_EDGE=SAME_EDGE
+image::3.png[width=100%,align=center]
+
+In the image below, the relevant parameter is selected as `OPPOSITE_EDGE`. The blue one represents the `CE` pin in the ODDR, and the yellow one represents the `Q` pin:
+
+.DDR_CLK_EDGE=OPPOSITE_EDGE
+image::6.jpg[width=100%,align=center]
+
+.DDR_CLK_EDGE=OPPOSITE_EDGE
+image::4.png[width=100%,align=center]
+
+<<<
+
+== Conclusion
+
+In this article, the `ODDR` primitive used in the Xilinx Vivado environment was examined, especially in terms of the `clock forwarding` purpose. First, the pins and basic parameters of the primitive were explained, and then it was described why the use of ODDR is preferred when transferring a clock signal inside the FPGA to outside the FPGA in a more controlled manner (in terms of duty-cycle and phase).
+
+In the experimental section, the `SAME_EDGE` and `OPPOSITE_EDGE` settings of the `DDR_CLK_EDGE` parameter were compared on the Basys3 (Artix-7) platform. Through Wavedrom figures and oscilloscope images, it was shown that this parameter directly affects the edge alignment and phase behavior of the clock driven to the outside. In addition, it was observed that the ODDR output can be controlled and the clock can be paused by using the `CE` signal.
+
+In summary, the ODDR primitive provides a practical, controlled, and effective solution in scenarios of driving a clock outside the FPGA. The timing constraint side was kept outside the scope of this article.

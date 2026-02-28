@@ -1,0 +1,167 @@
+= ODDR Primitive
+Yunus Esergün <yunusesergun2316@gmail.com>
+:stem: latexmath
+:toc:
+:toclevels: 4
+:imagesdir: assets
+:sectnums:
+
+<<<
+
+== Giriş
+
+`ODDR (Output Double Data Rate)` Xilinx'in Vivado ortamında sağladığı bir primitive. Aşağıda ilgili primitive'in pinlerini gösteren bir görsel bulunuyor. Normalde birçok işlevi var ama bu yazı kapsamında incelenecek özelliği `clock forwarding` özelliği. Yani FPGA dışarısına `duty-cycle` ve `faz` açısından kontrollü bir clock sürülmek istendiğinde bahsedilen primitive kullanılmalıdır. Bunu direkt olarak UG949 Ultrafast Design Methodology dokümanındaki `Creating an Output Clock` başlığında AMD/Xilinx öneriyor.
+
+.ODDR Primitive
+image::1.png[width=30%,align=center]
+
+=== ODDR Primitive Pinleri
+
+Pinlerin ne işe yaradığı ile ilgili tablo aşağıda yer almaktadır:
+
+[cols="1,1,3,5", options="header"]
+|===
+|Pin |Yön |Ne işe yarar? |Notlar / Örnek kullanım
+
+|C
+|Input
+|ODDR’nin clock girişi.
+|Q çıkışı, clock’un kenarlarında güncellenir. Clock forwarding yaparken genelde MMCM/PLL çıkışı buraya bağlanır.
+
+|D1
+|Input
+|Q portunun birinci (DDR) veri girişi.
+|Genelde *düşen kenarda* (DDR_CLK_EDGE parametresine bağlı olarak) Q’ya aktarılır. Clock forwarding için kullanım örneği: `D1='1'`.
+
+|D2
+|Input
+|Q portunun ikinci (DDR) veri girişi.
+|Genelde *yükselen kenarda* (DDR_CLK_EDGE parametresine bağlı olarak) Q’ya aktarılır. Clock forwarding için kullanım örneği: `D2='0'`.
+
+|CE
+|Input
+|Clock enable: ODDR’nin Q çıkışını kontrol eder, kapatıp açar.
+|`CE='1'` iken normal çalışır. `CE='0'` iken Q genellikle son değerini tutar.
+
+|R
+|Input
+|Reset girişi: Q portunu resetler.
+|Senkron/asenkron davranış `SRTYPE` gibi parametrelerle belirlenebilir. Tipik olarak `R` 1 iken Q=0’a zorlanır.
+
+|S
+|Input
+|Set girişi: Q’yu 1’e zorlar.
+|Senkron/asenkron davranış parametreye bağlıdır. Tipik olarak `S` 1 iken Q=1’e zorlanır.
+
+|Q
+|Output
+|ODDR’nin çıkışı (pin’e bağlanan clock sinyali).
+|DDR mantığı burada görünür: clock’un iki kenarında farklı değerler çıkabilir.
+|===
+
+Primitive'deki parametrelere ait tablo aşağıdadır:
+
+[cols="1,1,3,1, 5", options="header"]
+|===
+|Parametre |Tip |Alabileceği değerler |Default |Ne işe yarar?
+
+|DDR_CLK_EDGE
+|STRING
+|"OPPOSITE_EDGE", "SAME_EDGE"
+|"OPPOSITE_EDGE"
+|ODDR’nin DDR davranış modunu seçer: D1/D2’nin hangi kenarlarda Q’ya aktarılacağını ve “same-edge” davranışını belirler. Bu kısımla ilgili örnekler bir sonraki başlıklarda verilecek.
+
+|INIT
+|STD_LOGIC
+|0, 1
+|0
+|Q çıkışının başlangıç değerini belirler.
+
+|SRTYPE
+|STRING
+|"SYNC", "ASYNC"
+|"SYNC"
+|Set/Reset (S ve R pinleri) davranışının senkron mu asenkron mu olacağını seçer.
+|===
+
+=== ODDR Primitive Kullanmadaki Amaç
+
+FPGA içindeki bir clock, FPGA dışındaki entegreleri vs. clock’lamak için dışarı “forward” edilecekse, bunu ODDR ile yapmak çok etkili. Temel olarak mantık ve nedenler aşağıda listelenmiştir:
+
+- ODDR’nin iki veri girişinden biri 1, diğeri 0 olarak sabitlenirse (D1 ve D2), ODDR her clock kenarında çıkışa sıradaki değeri basacağı için pin üzerinde çok kontrollü bir clock üretilir. Bu sayede duty-cycle ve faz ilişkisi daha öngörülebilir.
+- D1/D2 sabitlerinin yeri değiştirilerek clock'u ters faza (180°) almak kolaylaşır. MMCM vs. ile kompleks arayüzlere ihtiyaç kalmaz. Buradaki 180° ifadesi, seçilen referans clock ve kullanılan D1/D2 polaritesine göre tanımlıdır.
+- ODDR’nin CE (clock enable) ve set/reset portları kullanılarak, dışarı verilen clock duraklatılıp çıkıştaki clock istenilen polaritede (0’da veya 1’de) tutulabilir. CE sinyali mümkünse C clock domain’ine senkron üretilmesi önerilmektedir.
+- Clock’u fabric’te normal logic/FF ile üretip pine sürmek, clock’u “veri gibi” bir yola sokar. ODDR ise clock üretimini IO çıkış DDR register yapısına taşır.
+
+Buna ek olarak timing constraint'ler de doğru girilerek dışarıya clock sürme işlemi doğru bir şekilde yapılır. Bu yazının kapsamında timing constraint kısmı bulunmamaktadır.
+
+<<<
+
+== Deney ve Sonuçlar
+
+=== Wavedrom Figürleri
+
+Yazı kapsamında kullanılan ODDR ayarları aşağıdaki kod snippet'inde yer almaktadır. Proje kapsamında Basys3 demo kartı kullanıldığından Artix-7 ODDR primitive kullanılmıştır. UltraScale+ ailesinde isim/primitive farklı olabilir (örn. ODDRE1):
+
+[source,vhdl]
+----
+   -- ODDR: Output Double Data Rate Output Register with Set, Reset
+   --       and Clock Enable.
+   --       Artix-7
+   -- Xilinx HDL Language Template, version 2024.1
+
+   ODDR_inst : ODDR
+   generic map(
+      DDR_CLK_EDGE => "SAME_EDGE", -- "OPPOSITE_EDGE" or "SAME_EDGE"
+      INIT => '0',                 -- Initial value for Q port ('1' or '0')
+      SRTYPE => "SYNC")            -- Reset Type ("ASYNC" or "SYNC")
+   port map (
+      Q  => clk_out, -- 1-bit DDR output
+      C  => clk_in,  -- 1-bit clock input
+      CE => clk_en,  -- 1-bit clock enable input
+      D1 => '1',     -- 1-bit data input (positive edge)
+      D2 => '0',     -- 1-bit data input (negative edge)
+      R  => '0',     -- 1-bit reset input
+      S  => '0'      -- 1-bit set input
+   );
+----
+
+Demo projede 100 MHz clock'tan MMCM kullanılarak 5 MHz clock üretilir. Belli bir `enable` sinyali, belli bir clock cycle'da bir toggle eder, bu enable sinyali ODDR primitive'indeki CE sinyalidir. Bu sayede ODDR primitive'inin değişik ayarlardaki tepkisi ölçülmüştür.
+
+ODDR primitive'indeki `DDR_CLK_EDGE` parametresine göre dışarı sürülen clock'un edge pozisyonu ve fazı değişiyor. Bu kapsamda, aşağıdaki ilk görselde ilgili parametre `SAME_EDGE` olarak seçilmiştir. `clk_in`, `clk_en` ve `clk_out` sinyalleri sırasıyla primitive'deki `C`, `CE` ve `Q` pinlerini, temsil etmektedir:
+
+.DDR_CLK_EDGE=SAME_EDGE
+image::2.png[width=100%,align=center]
+
+Aşağıdaki görselde ilgili parametre `OPPOSITE_EDGE` olarak seçilmiştir. `clk_in`, `clk_en` ve `clk_out` sinyalleri sırasıyla primitive'deki `C`, `CE` ve `Q` pinlerini, temsil etmektedir:
+
+.DDR_CLK_EDGE=OPPOSITE_EDGE
+image::7.png[width=100%,align=center]
+
+=== Osiloskop Figürleri
+
+Çizimin yanı sıra evde kullandığım OWON markasının SDS220S modeli osiloskobumla hem osiloskop üzerinden hem de bilgisayardaki uygulaması üzerinden görseller alındı. Görseller sırasıyla aşağıda bulunmaktadır. İlk görsellerde parametre `SAME_EDGE` seçilmiştir. Mavi olan ODDR'daki `CE` pinini, sarı olan ise `Q` pinini temsil etmektedir:
+
+.DDR_CLK_EDGE=SAME_EDGE
+image::5.jpg[width=100%,align=center]
+
+.DDR_CLK_EDGE=SAME_EDGE
+image::3.png[width=100%,align=center]
+
+Aşağıdaki görselde ilgili parametre `OPPOSITE_EDGE` olarak seçilmiştir. Mavi olan ODDR'daki `CE` pinini, sarı olan ise `Q` pinini temsil etmektedir:
+
+.DDR_CLK_EDGE=OPPOSITE_EDGE
+image::6.jpg[width=100%,align=center]
+
+.DDR_CLK_EDGE=OPPOSITE_EDGE
+image::4.png[width=100%,align=center]
+
+<<<
+
+== Sonuç
+
+Bu yazıda, Xilinx Vivado ortamında kullanılan `ODDR` primitive’i, özellikle `clock forwarding` amacı açısından incelenmiştir. Öncelikle primitive’in pinleri ve temel parametreleri açıklanmış, ardından FPGA içindeki bir clock sinyalinin FPGA dışına daha kontrollü bir şekilde (duty-cycle ve faz açısından) aktarılmasında neden ODDR kullanımının tercih edildiği anlatılmıştır.
+
+Deneysel bölümde, Basys3 (Artix-7) platformunda `DDR_CLK_EDGE` parametresinin `SAME_EDGE` ve `OPPOSITE_EDGE` ayarları karşılaştırılmıştır. Wavedrom figürleri ve osiloskop görüntüleri üzerinden, bu parametrenin dışarı sürülen clock’un kenar hizası ve faz davranışı üzerinde doğrudan etkili olduğu gösterilmiştir. Ayrıca `CE` sinyali kullanılarak ODDR çıkışının kontrol edilebildiği ve clock’un duraklatılabildiği gözlemlenmiştir.
+
+Özetle, ODDR primitive’i FPGA dışına clock sürme senaryolarında pratik, kontrollü ve etkili bir çözüm sunmaktadır. Timing constraint tarafı bu yazının kapsamı dışında tutulmuştur.

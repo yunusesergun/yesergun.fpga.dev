@@ -1,0 +1,38 @@
+CAPI=2:
+name: f:yunus:oddr:0-r0
+description: ODDR Primitive Example
+
+filesets:
+  rtl_verilog:
+    files:
+      - rtl/design_1_wrapper.v
+    file_type: verilogSource
+
+  rtl_vhdl:
+    files:
+      - rtl/en_cntr.vhd
+      - rtl/oddr_wrapper.vhd
+    file_type: vhdlSource
+
+  blockdesign:
+    files:
+      - rtl/design_1.tcl
+    file_type: tclSource
+
+  constraints:
+    files:
+      - xdc/pins.xdc
+    file_type: xdc
+
+targets:
+  default:
+    filesets : [rtl_verilog, rtl_vhdl, constraints, blockdesign]
+  project:
+    default_tool: vivado
+    filesets : [rtl_verilog, rtl_vhdl, constraints, blockdesign]
+    toplevel : design_1_wrapper
+    tools:
+      vivado:
+        part: xc7a35tcpg236-1
+        source_mgmt_mode: All
+

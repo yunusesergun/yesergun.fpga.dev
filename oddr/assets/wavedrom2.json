@@ -1,0 +1,27 @@
+{
+  signal: [
+  {
+    name: 'clk_in',
+    wave: 'P..........',
+    period:2
+  },
+  {},
+  {
+    name: 'clk_en',
+    wave: 'l.h.....l..',
+    period:2
+  },
+  {},
+  {
+    name: 'clk_out',
+    wave: 'h......lHlHlHlHlH.....'},
+  {},
+  {
+    node: '....a...b........'
+  },
+  ],
+  config: { hscale: 2 },
+  edge: [
+    'a<->b 2 CLOCK CYCLE'
+  ]
+}
