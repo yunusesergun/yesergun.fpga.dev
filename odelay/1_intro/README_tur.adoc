@@ -259,7 +259,7 @@ primitive propagation delay'i olduğu düşünülmektedir. Bunun yanı sıra,
 `DELAY_VALUE` olarak eklenen 1000 ps değeri de sinyaller arasındaki zaman
 farkında görülebilmektedir.
 
-image::./assets/2.png[2]
+image::./2.png[2]
 
 <<<
 
@@ -332,7 +332,7 @@ dışı bırakılmalıdır.
 AMD'nin VAR_LOAD/TIME prosedüründe paylaştığı adımlar temel alınarak aşağıdaki
 akış oluşturulmuştur:
 
-image::./assets/1.drawio.png[1]
+image::./1.drawio.png[1]
 
 AMD ayrıca büyük `CNTVALUE` değişimlerinin *8 tap veya daha küçük adımlara
 bölünmesini* güçlü bir şekilde önerir; 8 tap'ten büyük ani değişikliklerin
